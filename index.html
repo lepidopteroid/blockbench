@@ -3,7 +3,8 @@
 <head>
 	<title>Blockbench</title>
 	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="theme-color" content="#181a1f">
 	<meta name="robots" content="noindex">
 	<link rel="manifest" href="manifest.webmanifest">
@@ -20,6 +21,8 @@
 	<link rel="stylesheet" href="css/start_screen.css">
 	<link rel="stylesheet" href="css/panels.css">
 	<link rel="stylesheet" href="css/dialogs.css">
+	<link rel="stylesheet" href="css/framework7-bundle.min.css">
+	<link rel="stylesheet" href="css/framework7-tweaks.css">
 	<style type="text/css" id="theme_css"></style>
 </head>
 <body spellcheck="false" class="maximized">
@@ -86,6 +89,7 @@
 		<script src="lib/fik.min.js"></script>
 		<script src="lib/molang.umd.js"></script>
 		<script src="lib/wintersky.umd.js"></script>
+		<script src="lib/framework7-bundle.min.js"></script>
 		
 		<script src="bundle.js"></script>
 		<script src="js/preview/OrbitControls.js"></script>
@@ -182,139 +186,156 @@
 		<script src="js/globals.js"></script>
 
 		<script>if (window.module) module = window.module;</script>
-
-	<div style="display: none;"></div>
-
-	<div id="overlay_message_box" style="display: none;">
-		<div>
-			<h3><i class="material-icons">keyboard</i><span class="tl">keybindings.recording</span></h3>
-			<p class="tl">keybindings.press</p>
-			<button class="tl" onclick="Keybinds.recording.stopRecording()">dialog.cancel</button>
-			<button class="tl" onclick="Keybinds.recording.clear().stopRecording()">keybindings.clear</button>
-			<div id="keybind_input_box" contenteditable="true" style="font-size: 0"></div>
-		</div>
-	</div>
-
-	<div id="dialog_wrapper"></div>
-
-	<header>
-		<ul id="mac_window_menu" hidden></ul>
-		<div id="corner_logo" class="app-drag-region">
-			<img class="blockbench_logo" src="assets/logo_text_white.svg" alt="Blockbench" />
-		</div>
-		<ul id="menu_bar" class="scroll_horizontal"></ul>
-		<div id="title_bar_home_button" class="tool" onclick="Interface.tab_bar.openNewTab()"><i class="material-icons">home</i></div>
-		<div id="title_bar_undo_controls" hidden>
-			<div class="tool" onclick="BarItems.undo.trigger()"><i class="material-icons">undo</i></div>
-			<div class="tool" onclick="BarItems.redo.trigger()"><i class="material-icons">redo</i></div>
-		</div>
-		<div class="app-drag-region" id="header_free_bar"></div>
-		<div id="update_menu"></div>
-		<div id="settings_profiles_header_menu" class="hidden">
-			<i class="material-icons">manage_accounts</i>
-		</div>
-		<ul id="windows_window_menu" hidden>
-			<li onclick="currentwindow.minimize()">
-				<svg width="18" height="18" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M14 8v1H3V8h11z"/></svg>
-			</li>
-			<li onclick="currentwindow.isMaximized() ? currentwindow.unmaximize() : currentwindow.maximize()">
-				<svg class="restore" width="18" height="18" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M3 5v9h9V5H3zm8 8H4V6h7v7z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M5 5h1V4h7v7h-1v1h2V3H5v2z"/></svg>
-				<svg class="maximize" width="18" height="18" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M3 3v10h10V3H3zm9 9H4V4h8v8z"/></svg>
-			</li>
-			<li class="wwm_r" onclick="currentwindow.close()">
-				<svg width="18" height="18" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.116 8l-4.558 4.558.884.884L8 8.884l4.558 4.558.884-.884L8.884 8l4.558-4.558-.884-.884L8 7.116 3.442 2.558l-.884.884L7.116 8z"/></svg>
-			</li>
-		</ul>
-		<button id="web_download_button" hidden><a href="https://blockbench.net/downloads">
-			<span class="tl">web.download_app</span>
-			<i class="material-icons">system_update</i>
-		</a></button>
-	</header>
 	
+	<div id="app">
+		<div class="view view-main">
+			<div data-name="home" class="page">
+				<div class="page-content">
 
-	<div id="page_wrapper" class="invisible start_screen">
+					<div id="menu_sheet" class="sheet-modal">
+						<div class="sheet-modal-inner">
+							<div class="swipe-handler"></div>
+							<div class="block">
+							<p>Integer mollis nulla id nibh elementum finibus...</p>
+							</div>
+						</div>
+					</div>
 
-		<div id="blackout" class="darken"></div>
+					<div style="display: none;"></div>
 
-		<div id="tab_bar" :class="{drag_mode: drag_target_index !== null}">
-			<div id="tab_bar_list">
-				<div
-					class="project_tab"
-					v-for="(project, index) in tabs" :key="project.uuid"
-					:class="{
-						selected: project.selected,
-						new_tab: project.is_new_tab,
-						dragging: index == drag_target_index,
-						move_back:  (drag_position_index !== null && index > drag_target_index && drag_position_index >= index),
-						move_forth: (drag_position_index !== null && index < drag_target_index && drag_position_index <= index)
-					}"
-					:title="project.name || project.geometry_name || ''"
-					@dblclick="project.openSettings()"
-					@mousedown="mouseDown(project, $event)"
-					@mouseup="mouseUp(project, $event)"
-					@mouseenter="mouseEnter(project, $event)"
-					@mouseleave="mouseLeave(project, $event)"
-				>
-					<dynamic-icon :icon="project.format ? project.format.icon : 'home'"></dynamic-icon>
-					<label class="project_tab_session_badge" v-if="project.EditSession"><i class="material-icons">group</i>{{ project.EditSession.client_count }}</label>
-					<label>{{ project.getDisplayName() }}</label>
-					<div class="project_tab_close_button" :class="{unsaved: !project.saved}" :title="close_tab_label" @click="project.close()">
-						<i class="material-icons close_icon">clear</i>
-						<i class="material-icons unsaved_icon" v-if="!project.saved">fiber_manual_record</i>
+					<div id="overlay_message_box" style="display: none;">
+						<div>
+							<h3><i class="material-icons">keyboard</i><span class="tl">keybindings.recording</span></h3>
+							<p class="tl">keybindings.press</p>
+							<button class="tl" onclick="Keybinds.recording.stopRecording()">dialog.cancel</button>
+							<button class="tl" onclick="Keybinds.recording.clear().stopRecording()">keybindings.clear</button>
+							<div id="keybind_input_box" contenteditable="true" style="font-size: 0"></div>
+						</div>
+					</div>
+				
+					<div id="dialog_wrapper"></div>
+				
+					<header>
+						<ul id="mac_window_menu" hidden></ul>
+						<div id="corner_logo" class="app-drag-region">
+							<img class="blockbench_logo" src="assets/logo_text_white.svg" alt="Blockbench" />
+						</div>
+						<ul id="menu_bar" class="scroll_horizontal"></ul>
+						<div id="title_bar_home_button" class="tool" onclick="Interface.tab_bar.openNewTab()"><i class="material-icons">home</i></div>
+						<div id="title_bar_undo_controls" hidden>
+							<div class="tool" onclick="BarItems.undo.trigger()"><i class="material-icons">undo</i></div>
+							<div class="tool" onclick="BarItems.redo.trigger()"><i class="material-icons">redo</i></div>
+						</div>
+						<div class="app-drag-region" id="header_free_bar"></div>
+						<div id="update_menu"></div>
+						<div id="settings_profiles_header_menu" class="hidden">
+							<i class="material-icons">manage_accounts</i>
+						</div>
+						<ul id="windows_window_menu" hidden>
+							<li onclick="currentwindow.minimize()">
+								<svg width="18" height="18" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M14 8v1H3V8h11z"/></svg>
+							</li>
+							<li onclick="currentwindow.isMaximized() ? currentwindow.unmaximize() : currentwindow.maximize()">
+								<svg class="restore" width="18" height="18" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M3 5v9h9V5H3zm8 8H4V6h7v7z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M5 5h1V4h7v7h-1v1h2V3H5v2z"/></svg>
+								<svg class="maximize" width="18" height="18" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M3 3v10h10V3H3zm9 9H4V4h8v8z"/></svg>
+							</li>
+							<li class="wwm_r" onclick="currentwindow.close()">
+								<svg width="18" height="18" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.116 8l-4.558 4.558.884.884L8 8.884l4.558 4.558.884-.884L8.884 8l4.558-4.558-.884-.884L8 7.116 3.442 2.558l-.884.884L7.116 8z"/></svg>
+							</li>
+						</ul>
+						<button id="web_download_button" hidden><a href="https://blockbench.net/downloads">
+							<span class="tl">web.download_app</span>
+							<i class="material-icons">system_update</i>
+						</a></button>
+					</header>
+					
+				
+					<div id="page_wrapper" class="invisible start_screen">
+				
+						<div id="blackout" class="darken"></div>
+				
+						<div id="tab_bar" :class="{drag_mode: drag_target_index !== null}">
+							<div id="tab_bar_list">
+								<div
+									class="project_tab"
+									v-for="(project, index) in tabs" :key="project.uuid"
+									:class="{
+										selected: project.selected,
+										new_tab: project.is_new_tab,
+										dragging: index == drag_target_index,
+										move_back:  (drag_position_index !== null && index > drag_target_index && drag_position_index >= index),
+										move_forth: (drag_position_index !== null && index < drag_target_index && drag_position_index <= index)
+									}"
+									:title="project.name || project.geometry_name || ''"
+									@dblclick="project.openSettings()"
+									@mousedown="mouseDown(project, $event)"
+									@mouseup="mouseUp(project, $event)"
+									@mouseenter="mouseEnter(project, $event)"
+									@mouseleave="mouseLeave(project, $event)"
+								>
+									<dynamic-icon :icon="project.format ? project.format.icon : 'home'"></dynamic-icon>
+									<label class="project_tab_session_badge" v-if="project.EditSession"><i class="material-icons">group</i>{{ project.EditSession.client_count }}</label>
+									<label>{{ project.getDisplayName() }}</label>
+									<div class="project_tab_close_button" :class="{unsaved: !project.saved}" :title="close_tab_label" @click="project.close()">
+										<i class="material-icons close_icon">clear</i>
+										<i class="material-icons unsaved_icon" v-if="!project.saved">fiber_manual_record</i>
+									</div>
+								</div>
+								<div id="new_tab_button" v-if="!new_tab.visible" @click="openNewTab()" :title="new_tab.name">
+									<i class="material-icons">add</i>
+								</div>
+							</div>
+							<div id="search_tab_button" v-if="projects.length > 1" @click="tabOverview()" :title="search_tabs_label">
+								<i class="material-icons">view_module</i>
+							</div>
+						</div>
+				
+						<dialog id="action_selector"></dialog>
+				
+						<div id="start_screen"></div>
+				
+						<div id="work_screen" hidden>
+				
+							<div id="main_toolbar">
+								<div class="toolbar_wrapper narrow tools"></div>
+				
+								<div class="toolbar_wrapper narrow tool_options"></div>
+								<ul id="mode_selector" v-if="showModes()">
+									<li
+										v-for="mode in options"
+										v-if="Condition(mode.condition)"
+										v-bind:class="{selected: mode.selected}"
+										v-on:mousedown="mode.select()"
+									>{{ mode.name }}</li>
+								</ul>
+							</div>
+							
+							<div id="left_bar" class="sidebar"></div>
+				
+							<div id="right_bar" class="sidebar"></div>
+				
+							<div id="center">
+								<ul id="toast_notification_list">
+								</ul>
+				
+								<div id="top_slot"></div>
+								<div id="preview">
+									<div class="clamped_reference_images"></div>
+								</div>
+								<div id="bottom_slot"></div>
+				
+								<div id="mobile_panel_overlay" hidden></div>
+							</div>
+							<div id="status_bar"></div>
+				
+							<div id="panel_selector_bar"></div>
+						</div>
 					</div>
 				</div>
-				<div id="new_tab_button" v-if="!new_tab.visible" @click="openNewTab()" :title="new_tab.name">
-					<i class="material-icons">add</i>
-				</div>
-			</div>
-			<div id="search_tab_button" v-if="projects.length > 1" @click="tabOverview()" :title="search_tabs_label">
-				<i class="material-icons">view_module</i>
 			</div>
 		</div>
-
-		<dialog id="action_selector"></dialog>
-
-		<div id="start_screen"></div>
-
-		<div id="work_screen" hidden>
-
-			<div id="main_toolbar">
-				<div class="toolbar_wrapper narrow tools"></div>
-
-				<div class="toolbar_wrapper narrow tool_options"></div>
-				<ul id="mode_selector" v-if="showModes()">
-					<li
-						v-for="mode in options"
-						v-if="Condition(mode.condition)"
-						v-bind:class="{selected: mode.selected}"
-						v-on:mousedown="mode.select()"
-					>{{ mode.name }}</li>
-				</ul>
-			</div>
-			
-			<div id="left_bar" class="sidebar"></div>
-
-			<div id="right_bar" class="sidebar"></div>
-
-			<div id="center">
-				<ul id="toast_notification_list">
-				</ul>
-
-				<div id="top_slot"></div>
-				<div id="preview">
-					<div class="clamped_reference_images"></div>
-				</div>
-				<div id="bottom_slot"></div>
-
-				<div id="mobile_panel_overlay" hidden></div>
-			</div>
-			<div id="status_bar"></div>
-
-			<div id="panel_selector_bar"></div>
-
-		</div>
-	
 	</div>
+	
 	
 	<script src="js/boot_loader.js"></script>
 	<script>
@@ -326,6 +347,23 @@
 		} else {
 			document.getElementById('loading_error_message').innerHTML = 'No loading errors...'
 		}
+	</script>
+	<script>
+		var app = new Framework7({
+			el: '#app',
+			name: 'Blockbench',
+			panel: {
+				swipe: true,
+			},
+		});
+		var mainView = app.views.create('.view-main');
+		
+		var menuSheet = app.sheet.create({
+			el: document.getElementById('menu_sheet'),
+			closeByOutsideClick: true,
+			swipeToClose: true,
+
+		});
 	</script>
 </body>
 </html>
