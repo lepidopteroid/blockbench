@@ -38,6 +38,3 @@
 .list .item-link {
     text-decoration: none;
 }
-.list .item-link .item-inner.no-chevron:before {
-    display: none;
-}
