@@ -292,6 +292,29 @@ class Action extends BarItem {
 			});
 		}
 
+		this.menu_sheet_node = Interface.createElement('li', {title: this.description || '', menu_item: id}, [
+			Interface.createElement('a', {class: 'item-link item-content'}, [
+				Interface.createElement('div', {class: 'item-media'}, [
+					this.icon_node.cloneNode(true),
+				]),
+				Interface.createElement('div', {class: 'item-inner no-chevron'}, [
+					Interface.createElement('div', {class: 'item-title'}, this.name),
+					Interface.createElement('div', {class: 'item-after keybinding_label'}, this.keybind || ''),
+				]),
+			]),
+		]);
+		this.menu_sheet_node.addEventListener('mousedown', event => {
+			if (event.target == this.menu_sheet_node) {
+				//Menu.open.hover(this.menu_sheet_node, event);
+			}
+		});
+		if (!this.children) {
+			this.menu_sheet_node.addEventListener('click', event => {
+				if (!(event.target == this.menu_sheet_node || event.target.parentElement == this.menu_sheet_node)) return;
+				this.trigger(event);
+			});
+		}
+
 		this.addLabel(data.label)
 		this.updateKeybindingLabel()
 
@@ -350,6 +373,7 @@ class Action extends BarItem {
 			keybind_text = tl('keys.alt');
 		}
 		this.menu_node.querySelector('.keybinding_label').textContent = keybind_text;
+		this.menu_sheet_node.querySelector('.keybinding_label').textContent = keybind_text;
 		this.nodes.forEach(node => {
 			node.querySelector('.keybinding_label').textContent = keybind_text;
 		});

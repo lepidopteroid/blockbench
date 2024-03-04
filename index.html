@@ -66,6 +66,7 @@
 	</script>
 		<script src="lib/vue.min.js"></script>
 		<script src="lib/vue_sortable.js"></script>
+		<script src="lib/framework7-bundle.min.js"></script>
 		<script src="lib/jquery.js"></script>
 		<script src="lib/jquery-ui.min.js"></script>
 		<script src="lib/targa.js"></script>
@@ -89,7 +90,6 @@
 		<script src="lib/fik.min.js"></script>
 		<script src="lib/molang.umd.js"></script>
 		<script src="lib/wintersky.umd.js"></script>
-		<script src="lib/framework7-bundle.min.js"></script>
 		
 		<script src="bundle.js"></script>
 		<script src="js/preview/OrbitControls.js"></script>
@@ -110,6 +110,7 @@
 		<script src="js/interface/panels.js"></script>
 		<script src="js/interface/interface.js"></script>
 		<script src="js/interface/menu_bar.js"></script>
+		<script src="js/interface/menu_sheet.js"></script>
 		<script src="js/interface/start_screen.js"></script>
 		<script src="js/interface/keyboard.js"></script>
 		<script src="js/interface/settings.js"></script>
@@ -187,19 +188,11 @@
 
 		<script>if (window.module) module = window.module;</script>
 	
-	<div id="app">
-		<div class="view view-main">
+	<div id="app"> <!--F7 App Container-->
+
+		<div class="view view-main view-init">
 			<div data-name="home" class="page">
 				<div class="page-content">
-
-					<div id="menu_sheet" class="sheet-modal">
-						<div class="sheet-modal-inner">
-							<div class="swipe-handler"></div>
-							<div class="block">
-							<p>Integer mollis nulla id nibh elementum finibus...</p>
-							</div>
-						</div>
-					</div>
 
 					<div style="display: none;"></div>
 
@@ -335,8 +328,6 @@
 			</div>
 		</div>
 	</div>
-	
-	
 	<script src="js/boot_loader.js"></script>
 	<script>
 		if (!Blockbench || !Blockbench.setup_successful) {
@@ -349,20 +340,20 @@
 		}
 	</script>
 	<script>
-		var app = new Framework7({
-			el: '#app',
-			name: 'Blockbench',
-			panel: {
-				swipe: true,
+		const framework7App = new Framework7({
+			el: 		            '#app',
+			name: 		            'Blockbench',
+			darkMode: 	            'auto',
+			iosTranslucentBars:     false,
+			panel: 		            { swipe: true },
+			routes: 	            [],
+			on: {
+				init: function() {
+					console.log('Framework7 App Initialized');
+
+					menuSheet.setup(this);
+				},
 			},
-		});
-		var mainView = app.views.create('.view-main');
-		
-		var menuSheet = app.sheet.create({
-			el: document.getElementById('menu_sheet'),
-			closeByOutsideClick: true,
-			swipeToClose: true,
-			swipeHandler: document.getElementById('menu_sheet').querySelector('.swipe-handler'),
 		});
 	</script>
 </body>
