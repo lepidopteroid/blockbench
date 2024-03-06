@@ -293,11 +293,11 @@ class Action extends BarItem {
 		}
 
 		this.menu_sheet_node = Interface.createElement('li', {title: this.description || '', menu_item: id}, [
-			Interface.createElement('a', {class: 'item-link item-content'}, [
+			Interface.createElement('a', {class: 'item-link item-content no-chevron'}, [
 				Interface.createElement('div', {class: 'item-media'}, [
 					this.icon_node.cloneNode(true),
 				]),
-				Interface.createElement('div', {class: 'item-inner no-chevron'}, [
+				Interface.createElement('div', {class: 'item-inner'}, [
 					Interface.createElement('div', {class: 'item-title'}, this.name),
 					Interface.createElement('div', {class: 'item-after keybinding_label'}, this.keybind || ''),
 				]),
