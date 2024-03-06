@@ -104,8 +104,7 @@ class SheetMenu extends Menu {
       ((e) => {
         e.setAttribute('title', 
           `${
-            object.description && 
-            tl(object.description)
+            object.description || ''
           }`
         );
         e.setAttribute('menu-item', object.id);
@@ -173,7 +172,7 @@ class SheetMenu extends Menu {
       };
 
       // Return the entry
-      if ( childList == 0) {
+      if ( childList <= 0) {
         return;
       };
       return entry;
@@ -186,6 +185,8 @@ class SheetMenu extends Menu {
         path: `/menu/${object.id}`,
         el: undefined,
       };
+
+      let childCount = 0;
 
       // Get chid list contents
       if (!list) {
@@ -211,14 +212,21 @@ class SheetMenu extends Menu {
           };
         });
 
+        // Store number of list items added
+        childCount = childList.el.querySelector(
+          'ul'
+        ).childElementCount;
+
+        // Set el to page node
         childList.el = childList.el.querySelector(
           '.page'
         );
+
+        //Push child list to router
+        parent.routes.push(childList);
       };
 
-      //Push child list to router
-      parent.routes.push(childList);
-      return list.length;
+      return childCount;
     };
   };
     
@@ -232,6 +240,8 @@ class MenuSheet {
   constructor() {
     this.app = undefined;
     this.sheet = undefined;
+    this.view = undefined;
+    this.swiper = undefined;
     this.open = undefined;
     this.barMenus = {};
     this.menus = {};
@@ -254,71 +264,100 @@ class MenuSheet {
       el: this.app.$('#menu_sheet'),
     });
 
-    this.app.views.create(this.app.$(
+    this.view = this.app.views.create(this.app.$(
       '#menu_sheet_view'
     ), {
       url: '/',
       routes: [],
     });
 
-    this.app.swiper.get(
+    this.swiper = this.app.swiper.get(
       this.app.$('#menu_sheet_swiper')
-    ).on('slideChange', {
-      app: this.app
-    }, function(event) {
-      console.log('slideChange');
-      event.data.app.$(`#menu_sheet_view a[href$="#${ 
-        event.data.app.$(
-          this.slides
-        ).eq(this.activeIndex)[0].id 
-      }"]`)[0].scrollIntoView({ behavior: "smooth"});
+    );
+    
+    this.swiper.on('slideChange', () => {
+      let activeTab = this.app.$(
+        this.swiper.slides
+      ).eq(this.swiper.activeIndex)[0].id;
+
+      this.app.$(
+        `#menu_sheet_view a[href$="#${activeTab}"]`
+      )[0].scrollIntoView(
+        { behavior: "smooth" }
+      );
     });
 
-    this.initMenus();
     this.update();
-
-    for (let route in this.routes) {
-      this.app.views.get(
-        document.getElementById('menu_sheet_view')
-      ).routes.push(this.routes[route]);
-    };
-
-    this.app.$(
-      '#menu_sheet_toolbar_inner'
-    ).children('a').eq(0).addClass(
-      'tab-link-active'
-    );
-
-    this.app.$(
-      '#menu_sheet_swiper'
-    ).children('swiper-slide').eq(0).addClass(
-        'tab-active'
-    );
-  };
-
-  initMenus() {
-    for (let menu in this.barMenus) {
-      new SheetMenu(
-        this.barMenus[menu].id,
-        this.barMenus[menu].structure,
-        this.barMenus[menu].options,
-        this
-      );
-    };
   };
 
   update() {
+    // Do nothing if F7 isn't initialized
+    if (!this.app) return;
+
+    let swiper = document.querySelector(
+      '#menu_sheet_swiper'
+    );
+
     let bar = document.querySelector(
       '#menu_sheet_toolbar_inner'
     );
-    $(bar).children().detach();
-    this.keys = [];
-    for (let menu in this.menus) {
-      if (this.menus.hasOwnProperty(menu)) {
-        if (this.menus[menu].conditionMet()) {
-          bar.append(this.menus[menu].label);
-          this.keys.push(menu);
+
+    let view = document.getElementById(
+      'menu_sheet_view'
+    );
+
+    // Update swiper tabs
+    if (swiper) {
+      this.app.$(swiper).children().detach();
+
+      for (let menu in this.barMenus) {
+        new SheetMenu(
+          this.barMenus[menu].id,
+          this.barMenus[menu].structure,
+          this.barMenus[menu].options,
+          this
+        );
+      };
+
+      this.app.$(
+        '#menu_sheet_swiper'
+      ).children('swiper-slide').eq(0).addClass(
+          'tab-active'
+      );
+    };
+
+    // Update tab bar
+    if (bar) {
+      this.app.$(bar).children().detach();
+
+      this.keys = [];
+
+      for (let menu in this.menus) {
+        if (this.menus.hasOwnProperty(menu)) {
+          if (this.menus[menu].conditionMet()) {
+            bar.append(this.menus[menu].label);
+            this.keys.push(menu);
+          };
         };
+      };
+
+      this.app.$(
+        '#menu_sheet_toolbar_inner'
+      ).children('a').eq(0).addClass(
+        'tab-link-active'
+      );
+    };
+
+    // Update routes
+    if (this.view) {
+      // Clear previous
+      this.view.routes.length = 0;
+
+      // Add new
+      for (let route in this.routes) {
+        this.view.routes.push(
+          this.routes[route]
+        );
       };
     };
   };
@@ -346,14 +385,15 @@ class MenuSheet {
 
 var menuSheet = new MenuSheet;
 
+// Extend MenuBar update function to populate sheet
 MenuBar.update = (function (_super) {
   return function() {
     for (let menu in MenuBar.menus) {
-      if (menuSheet.barMenus[menu]) {
-        return;
-      } else {
+      // If menu doesn't exist yet create it
+      if (!menuSheet.barMenus[menu]) {
         menuSheet.barMenus[menu] = {};
       }; 
+      // Copy menu params
       menuSheet.barMenus[menu].id = 
         MenuBar.menus[menu].id; 
       menuSheet.barMenus[menu].structure =
@@ -362,8 +402,13 @@ MenuBar.update = (function (_super) {
         MenuBar.menus[menu].options;
     };
 
+    // Filter menu is redundant/obsolete
     delete menuSheet.barMenus.filter;
+
+    //Update our menu sheet
+    menuSheet.update();
     
+    // Call original MenuBar.update
     return _super.apply(this, arguments);
   }
 })(MenuBar.update);

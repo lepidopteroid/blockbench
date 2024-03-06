@@ -289,7 +289,6 @@ class Menu {
 				context = s.context;
 			}
 			let scope_context = context;
-			console.log(scope_context);
 			var entry;
 			if (s === '_') {
 				s = new MenuSeparator();
