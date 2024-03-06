@@ -214,9 +214,6 @@ class SheetMenu extends Menu {
 
       //Push child list to router
 			parent.routes.push(childList);
-      // parent.app.views.get(
-			// 	document.getElementById('menu_sheet_view')
-			// ).routes.push(childList);
     };
   };
     
@@ -234,29 +231,17 @@ class MenuSheet {
 		this.barMenus = {};
 		this.menus = {};
 		this.routes = [];
-		this.template = `
-			<div id="menu_sheet" class="sheet-modal menu-sheet" style="height:70vh">
-					<div id="menu_sheet_inner" class="sheet-modal-inner">
-							<div id="menu_sheet_view" class="view sheet-view">
-									<div id="menu_sheet_main_page" class="page">
-											<div id="menu_sheet_toolbar" class="toolbar tabbar tabbar-scrollable no-outline">
-													<div id="menu_sheet_toolbar_inner" class="toolbar-inner">
-															<!-- Links Here -->
-													</div>
-											</div>
-											<swiper-container id="menu_sheet_swiper" class="tabs">
-													<!-- Swiper-Slides Here -->
-											</swiper-container>
-									</div>
-							</div>
-					</div>
-			</div>
-		`;
+		this.template = document.querySelector(
+			'#template_menu_sheet'
+		).content.cloneNode(true);
 	};
 
   setup(app) {
 		this.app = app;
-		this.app.$(this.template).appendTo('#app');
+
+		document.getElementById('app').append(
+			this.template
+		);
 		
 		this.sheet = this.app.sheet.create({
 			closeByOutsideClick: true,
@@ -377,67 +362,3 @@ MenuBar.update = (function (_super) {
 		return _super.apply(this, arguments);
 	}
 })(MenuBar.update);
-
-
-		// this.node = Interface.createElement('swiper-slide', {
-    //         class:  'page-content tab',
-    //         id:      id,
-    //     }, [
-		// 	Interface.createElement('div', {
-    //             class: 'list inset list-outline-ios list-strong-ios list-dividers-ios',
-    //         }, [
-    //             Interface.createElement('ul'),
-    //         ]),
-		// ]);
-
-		// this.label = Interface.createElement('a', {
-    //         class:  'tab-link',
-    //         href:   `#${id}`,
-    //     }, this.name);
-
-
-		//let entry = Interface.createElement('li', {
-		// 		title:      object.description && tl(object.description), 
-		// 		menu_item:  object.id,
-		// }, [
-		// 		Interface.createElement('a', {
-		// 				class:  `item-link item-content ${(object instanceof Action || object.type == 'format') ? 'no-chevron': ''}`, 
-		// 				href:   (object instanceof Action || object.type == 'format') ? '#' : `/menu/${object.id}`, // Route to open child list by id
-		// 		}, [
-		// 				Interface.createElement('div', {
-		// 						class: 'item-media'
-		// 				}, [
-		// 						Blockbench.getIconNode((icon = typeof object.icon) => {
-		// 								return (icon === 'function') ? object.icon(object.context) : object.icon;
-		// 						},  object.color),
-		// 				]),
-		// 				Interface.createElement('div', {
-		// 						class: `item-inner`
-		// 				}, [
-		// 						Interface.createElement('div', {
-		// 								class: 'item-title'
-		// 						}, tl(object.name)),
-		// 						Interface.createElement('div', {
-		// 								class: 'item-after keybinding_label'
-		// 						}, object.keybind || ''),
-		// 				]),
-		// 		]),
-		// ]);
-
-		// Interface.createElement('div', {class: 'page'}, [
-		// 	Interface.createElement('div', {class: 'toolbar'}, [
-		// 		Interface.createElement('div', {class: 'toolbar-inner'}, [
-		// 			Interface.createElement('div', {class: 'left'}, [
-		// 				Interface.createElement('a', {class: 'link back'}, [
-		// 					Interface.createElement('i', {class: 'icon icon-back'}, []),
-		// 					Interface.createElement('span', {class: 'if-not-md'}, ['Back']),
-		// 				]),
-		// 			]),
-		// 		]),
-		// 	]),
-		// 	Interface.createElement('div', {class: 'page-content'}, [
-		// 		Interface.createElement('div', {class: 'list inset list-outline-ios list-strong-ios list-dividers-ios'}, [
-		// 			Interface.createElement('ul'),
-		// 		]),
-		// 	]),
-		// ]);
