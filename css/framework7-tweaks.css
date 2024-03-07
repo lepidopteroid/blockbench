@@ -84,17 +84,13 @@ header {
   will-change: none;
 }
 
+body.is_mobile #work_screen {
+  grid-template-rows: auto minmax(200px, 5000px) 26px calc(36px + var(-f7-safe-area-bottom)) !important;
+}
+
 #work_screen .panel {
   display: flex;
   position: static;
-}
-
-body.is_mobile #panel_selector_bar {
-  padding-bottom: var(--f7-safe-area-bottom);
-}
-
-body.is_mobile.is_landscape #panel_selector_bar {
-  padding-bottom: 0;
 }
 
 @font-face {
