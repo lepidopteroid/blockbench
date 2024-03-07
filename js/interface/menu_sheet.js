@@ -156,6 +156,7 @@ class SheetMenu extends Menu {
         let entryLink = entry.querySelector('a');
         $(entryLink).on('click', e => {
           object.click(context, e);
+          parent.sheet.close();
         });
       };
 
