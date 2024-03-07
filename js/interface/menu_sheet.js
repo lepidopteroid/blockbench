@@ -149,19 +149,56 @@ class SheetMenu extends Menu {
       ).textContent = object.keybind || '';
 
       // If action is toggle add toggle GUI
-      // if (object instanceof Toggle) {
+      if (object instanceof Toggle) {
+        let toggleNode = 
+          document.createElement('div');
+        toggleNode.classList.add('toggle');
         
-      // };
+        toggleNode.append(document.querySelector(
+          '#template_toggle_node'
+        ).content.cloneNode(true));
+
+        entry.querySelector(
+          '.item-after'
+        ).replaceChildren(toggleNode);
+
+        parent.app.toggle.create({
+          el: entry.querySelector('.toggle'),
+          on: {
+            change: function(entry, parent) {
+              let toggleState = 
+              parent.app.toggle.get(
+                entry.querySelector('.toggle')
+              ).checked;
+
+              if (toggleState != this.value) {
+                this.click();
+                console.log(
+                  `${this.id}: ${this.value}`
+                );
+              };
+            }.bind(object, entry, parent)
+          }
+        }).checked = object.value;
+      };
 
       // Add event on click
-      if (typeof object.click === 'function') {
-        let entryLink = entry.querySelector('a');
+      let entryLink = entry.querySelector('a');
+      
+      if (object instanceof Toggle) {
+        $(entryLink).on('click', e => {
+          parent.app.toggle.get(
+            entry.querySelector('.toggle')
+          ).toggle();
+        });
+      } else if (
+        typeof object.click === 'function'
+      ) {
         $(entryLink).on('click', e => {
           object.click(context, e);
           parent.sheet.close();
         });
       } else if (!object.children) {
-        let entryLink = entry.querySelector('a');
         $(entryLink).on('click', e => {
           object.trigger(e);
           parent.sheet.close();
