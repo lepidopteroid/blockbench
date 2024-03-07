@@ -109,21 +109,6 @@ class SheetMenu extends Menu {
         );
         e.setAttribute('menu-item', object.id);
       })(entry.querySelector('li'));
-      
-      // Remove chevron if no sub-menus
-      if (
-        object instanceof Action || 
-        object.type == 'format'
-      ) {
-        entry.querySelector('a').classList.add(
-          'no-chevron'
-        );
-      } else {
-        entry.querySelector('a').setAttribute(
-          'href', 
-          `/menu/${object.id}`
-        );
-      };
 
       // Add item icon
       entry.querySelector('.item-media').append(
@@ -150,6 +135,21 @@ class SheetMenu extends Menu {
       if (object instanceof Action) {
         entry = object.menu_sheet_node;
       }; 
+
+       // Remove chevron if no sub-menus
+       if (
+        object instanceof Action || 
+        Formats[object.id]
+      ) {
+        entry.querySelector('a').classList.add(
+          'no-chevron'
+        );
+      } else {
+        entry.querySelector('a').setAttribute(
+          'href', 
+          `/menu/${object.id}`
+        );
+      };
 
       // Add event on click
       if (typeof object.click === 'function') {
