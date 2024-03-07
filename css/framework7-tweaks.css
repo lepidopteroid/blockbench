@@ -85,6 +85,10 @@ header {
   position: static;
 }
 
+body.is_mobile #panel_selector_bar {
+  padding: 0 var(--f7-safe-area-right) var(--f7-safe-area-bottom) var(--f7-safe-area-left);
+}
+
 @font-face {
   font-family: 'Framework7 Icons';
   font-style: normal;
