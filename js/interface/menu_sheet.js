@@ -110,6 +110,18 @@ class SheetMenu extends Menu {
         e.setAttribute('menu-item', object.id);
       })(entry.querySelector('li'));
 
+      // Remove chevron if no sub-menus
+      if (object instanceof Action) {
+        entry.querySelector('a').classList.add(
+          'no-chevron'
+        );
+      } else {
+        entry.querySelector('a').setAttribute(
+          'href', 
+          `/menu/${object.id}`
+        );
+      };
+
       // Add item icon
       entry.querySelector('.item-media').append(
         Blockbench.getIconNode(
@@ -135,21 +147,6 @@ class SheetMenu extends Menu {
       if (object instanceof Action) {
         entry = object.menu_sheet_node;
       }; 
-
-       // Remove chevron if no sub-menus
-       if (
-        object instanceof Action || 
-        Formats[object.id]
-      ) {
-        entry.querySelector('a').classList.add(
-          'no-chevron'
-        );
-      } else {
-        entry.querySelector('a').setAttribute(
-          'href', 
-          `/menu/${object.id}`
-        );
-      };
 
       // Add event on click
       if (typeof object.click === 'function') {
@@ -191,11 +188,11 @@ class SheetMenu extends Menu {
 
       // Get chid list contents
       if (!list) {
-        list = (
-          (typeof object.children == 'function') ? 
-          object.children(context) : 
-          object.children
-        );
+        if (typeof object.children == 'function') {
+          list = object.children(context);
+        } else {
+          list = object.children;
+        };
       }; 
 
       // Construct child list page container
@@ -221,7 +218,7 @@ class SheetMenu extends Menu {
         // Set el to page node
         childList.el = childList.el.querySelector(
           '.page'
-        );
+        ).cloneNode(true);
 
         //Push child list to router
         parent.routes.push(childList);
