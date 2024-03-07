@@ -148,11 +148,10 @@ class SheetMenu extends Menu {
         '.item-after'
       ).textContent = object.keybind || '';
 
-      // Get existing entry of action if exists
-      if (object instanceof Action) {
-        entry = 
-          object.menu_sheet_node.cloneNode(true);
-      }; 
+      // If action is toggle add toggle GUI
+      // if (object instanceof Toggle) {
+        
+      // };
 
       // Add event on click
       if (typeof object.click === 'function') {
