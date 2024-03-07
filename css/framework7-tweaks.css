@@ -85,7 +85,7 @@ header {
 }
 
 body.is_mobile #work_screen {
-  grid-template-rows: auto minmax(200px, 5000px) 26px calc(36px + var(-f7-safe-area-bottom)) !important;
+  grid-template-rows: auto minmax(200px, 5000px) 26px calc(36px + var(--f7-safe-area-bottom)) !important;
 }
 
 #work_screen .panel {
