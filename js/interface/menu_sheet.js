@@ -351,11 +351,15 @@ class MenuSheet {
         };
       };
 
-      this.app.$(
-        '#menu_sheet_toolbar_inner'
-      ).children('a').eq(0).addClass(
-        'tab-link-active'
-      );
+      if ($(
+        '#menu_sheet_toolbar_inner .tab-link-active'
+      ).length <= 0) {
+        this.app.$(
+          '#menu_sheet_toolbar_inner'
+        ).children('a').eq(0).addClass(
+          'tab-link-active'
+        );
+      };
     };
 
     // Update routes
