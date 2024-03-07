@@ -173,9 +173,6 @@ class SheetMenu extends Menu {
 
               if (toggleState != this.value) {
                 this.click();
-                console.log(
-                  `${this.id}: ${this.value}`
-                );
               };
             }.bind(object, entry, parent)
           }
