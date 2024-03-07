@@ -96,9 +96,11 @@ class SheetMenu extends Menu {
       }; 
 
       // Build default entry
-      let entry = document.querySelector(
+      let entry = document.createElement('li');
+
+      entry.append(document.querySelector(
         '#template_menu_sheet_item'
-      ).content.cloneNode(true);
+      ).content.cloneNode(true));
 
       // Add title and item id
       ((e) => {
@@ -108,10 +110,13 @@ class SheetMenu extends Menu {
           }`
         );
         e.setAttribute('menu-item', object.id);
-      })(entry.querySelector('li'));
+      })(entry);
 
       // Remove chevron if no sub-menus
-      if (object instanceof Action) {
+      if (
+        object instanceof Action ||
+        Formats[object.id]
+        ) {
         entry.querySelector('a').classList.add(
           'no-chevron'
         );
@@ -145,7 +150,8 @@ class SheetMenu extends Menu {
 
       // Get existing entry of action if exists
       if (object instanceof Action) {
-        entry = object.menu_sheet_node;
+        entry = 
+          object.menu_sheet_node.cloneNode(true);
       }; 
 
       // Add event on click
@@ -153,6 +159,12 @@ class SheetMenu extends Menu {
         let entryLink = entry.querySelector('a');
         $(entryLink).on('click', e => {
           object.click(context, e);
+          parent.sheet.close();
+        });
+      } else if (!object.children) {
+        let entryLink = entry.querySelector('a');
+        $(entryLink).on('click', e => {
+          object.trigger(e);
           parent.sheet.close();
         });
       };
@@ -165,7 +177,7 @@ class SheetMenu extends Menu {
       ) {
         childList = createChildList(
           object, 
-          object.menu_sheet_node
+          entry
         );
       };
 
@@ -181,10 +193,13 @@ class SheetMenu extends Menu {
       let childList = { 
         // Route to open child list by id
         path: `/menu/${object.id}`,
-        el: undefined,
+        el: document.createElement('div'),
       };
 
+      childList.el.classList.add('page');
+
       let childCount = 0;
+      let childDocFragment;
 
       // Get chid list contents
       if (!list) {
@@ -197,9 +212,11 @@ class SheetMenu extends Menu {
 
       // Construct child list page container
       if (list.length) {
-        childList.el = document.querySelector(
+        childDocFragment = document.querySelector(
           '#template_menu_sheet_child_list'
         ).content.cloneNode(true);
+
+        childList.el.append(childDocFragment);
 
         list.forEach((childObject) => {  
           let entry = getEntry(childObject);
@@ -214,11 +231,6 @@ class SheetMenu extends Menu {
         childCount = childList.el.querySelector(
           'ul'
         ).childElementCount;
-
-        // Set el to page node
-        childList.el = childList.el.querySelector(
-          '.page'
-        ).cloneNode(true);
 
         //Push child list to router
         parent.routes.push(childList);
