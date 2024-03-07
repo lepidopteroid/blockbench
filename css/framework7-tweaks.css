@@ -47,6 +47,18 @@ header {
   display: none;
 }
 
+#page_wrapper {
+  height: 100%;
+}
+
+#start_screen {
+  padding: 0;
+}
+
+#menu_sheet_view .list {
+  margin-bottom: 90px;
+}
+
 #dialog_wrapper .dialog {
   opacity: 1;
   margin-left: 0px;
