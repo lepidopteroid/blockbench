@@ -90,17 +90,11 @@ header {
 }
 
 body.is_mobile #panel_selector_bar {
-  padding-top: 0; 
-  padding-right: var(--f7-safe-area-right);
   padding-bottom: var(--f7-safe-area-bottom);
-  padding-left:  var(--f7-safe-area-left);
 }
 
 body.is_mobile.is_landscape #panel_selector_bar {
-  padding-top: 0; 
-  padding-right: var(--f7-safe-area-right);
-  padding-bottom: var(--f7-safe-area-bottom);
-  padding-left:  var(--f7-safe-area-left);
+  padding-bottom: 0;
 }
 
 @font-face {
