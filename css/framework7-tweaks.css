@@ -85,12 +85,22 @@ header {
 }
 
 body.is_mobile #work_screen {
-  grid-template-rows: auto minmax(200px, 5000px) 26px calc(36px + var(--f7-safe-area-bottom)) !important;
+  grid-template-rows: auto minmax(200px, 5000px) 26px calc(var(--f7-toolbar-height) + var(--f7-safe-area-bottom)) !important;
 }
 
 #work_screen .panel {
   display: flex;
   position: static;
+}
+
+body.is_mobile #panel_selector_bar .panel_selector {
+  height: var(--f7-toolbar-height);
+}
+
+.is_mobile #panel_selector_bar .panel_selector.selected {
+  background-color: transparent!important;
+  color: var(--color-accent);
+  border-bottom: none!important;
 }
 
 @font-face {
