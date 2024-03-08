@@ -97,10 +97,24 @@ body.is_mobile #panel_selector_bar .panel_selector {
   height: var(--f7-toolbar-height);
 }
 
-.is_mobile #panel_selector_bar .panel_selector.selected {
-  background-color: transparent!important;
+body.is_mobile #panel_selector_bar .panel_selector.selected {
+  background-color: transparent;
   color: var(--color-accent);
-  border-bottom: none!important;
+  border-bottom: none;
+}
+
+body.is_mobile #panel_selector_bar .panel_selector .icon_wrapper {
+  margin: 0;
+  height: var(--f7-toolbar-height);
+  line-height: var(--f7-toolbar-height);
+}
+
+#mobile_keyboard_menu {
+  display: none; /* temporary */
+  width: var(--f7-toolbar-height);
+  padding: 11px;
+  color: var(--color-text);
+  height: var(--f7-toolbar-height);
 }
 
 @font-face {
