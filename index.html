@@ -311,13 +311,26 @@
           <div class="navbar-inner sliding">
             <div class="title">Blockbench</div>
             <div class="right">
-                <a href="#" class="link icon-only sheet-open" data-sheet=".menu-sheet">
-                  <i class="f7-icons if-not-md">ellipsis_circle</i>
-                </a>
+              <a href="#" class="link icon-only sheet-open" data-sheet=".menu-sheet">
+                <i class="f7-icons if-not-md">ellipsis_circle</i>
+              </a>
             </div>
           </div>
         </div>
-        
+        <div class="subnavbar" id="mode_selector" v-if="showModes()">
+          <div class="subnavbar-inner">
+            <div class="segmented segmented-strong">
+                <a class="button"
+                  v-for="mode in options"
+                  v-if="Condition(mode.condition)"
+                  v-bind:class="{'button-active': mode.selected}"
+                  v-on:mousedown="mode.select()"
+                >{{ mode.name }}</a>
+                <span class="segmented-highlight"></span>
+            </div>
+          </div>
+        </div>
+
 				<div data-name="home" class="page">
 					<div class="page-content">
 						<div id="page_wrapper" class="invisible start_screen">
@@ -370,14 +383,6 @@
 									<div class="toolbar_wrapper narrow tools"></div>
 					
 									<div class="toolbar_wrapper narrow tool_options"></div>
-									<ul id="mode_selector" v-if="showModes()">
-										<li
-											v-for="mode in options"
-											v-if="Condition(mode.condition)"
-											v-bind:class="{selected: mode.selected}"
-											v-on:mousedown="mode.select()"
-										>{{ mode.name }}</li>
-									</ul>
 								</div>
 								
 								<div id="left_bar" class="sidebar"></div>

@@ -117,6 +117,13 @@ body.is_mobile #panel_selector_bar .panel_selector .icon_wrapper {
   height: var(--f7-toolbar-height);
 }
 
+#mode_selector {
+  height: calc(var(--f7-subnavbar-height) + 1px);
+  margin-left: 0;
+  margin-right: 0;
+  text-align: center;
+}
+
 @font-face {
   font-family: 'Framework7 Icons';
   font-style: normal;
