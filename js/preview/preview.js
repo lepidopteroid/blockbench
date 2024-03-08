@@ -240,7 +240,8 @@ class Preview {
 		this.camPers.position.fromArray(this.default_angle.position);
 		this.controls.target.fromArray(this.default_angle.target);
 
-		if (!Blockbench.isMobile && !this.offscreen) {
+    //rm !Blockbench.isMobile bc i want it on mobile
+		if (!this.offscreen) {
 			this.orbit_gizmo = new OrbitGizmo(this);
 			this.node.append(this.orbit_gizmo.node);
 		}

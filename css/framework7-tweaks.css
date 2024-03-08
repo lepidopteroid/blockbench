@@ -97,6 +97,12 @@ body.is_mobile #work_screen {
   position: static;
 }
 
+body.is_mobile .orbit_gizmo {
+  right: auto;
+  left: 0;
+  transform: scale(0.75);
+}
+
 body.is_mobile #panel_selector_bar .panel_selector {
   height: var(--f7-toolbar-height);
 }
