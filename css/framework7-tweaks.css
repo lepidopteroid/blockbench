@@ -128,7 +128,8 @@ body.is_mobile #panel_selector_bar .panel_selector .icon_wrapper {
 }
 
 #mode_selector {
-  height: calc(var(--f7-subnavbar-height) + 1px);
+  height: auto;
+  width: 54vw;
   margin-left: 0;
   margin-right: 0;
   text-align: center;
