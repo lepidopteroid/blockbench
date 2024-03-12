@@ -135,6 +135,10 @@ body.is_mobile #panel_selector_bar .panel_selector .icon_wrapper {
   text-align: center;
 }
 
+.sp-container:not(.sp-flat){
+  z-index:10000;
+}
+
 @font-face {
   font-family: 'Framework7 Icons';
   font-style: normal;
