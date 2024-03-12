@@ -117,7 +117,7 @@ const Modes = {
 };
 onVueSetup(function() {
 	Modes.vue = new Vue({
-		el: '#mode_selector',
+		el: '#mode_selector_container',
 		data: {
 			options: Modes.options
 		},

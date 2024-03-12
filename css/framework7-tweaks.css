@@ -1,10 +1,7 @@
-.ios {
-  --f7-sheet-border-radius: 10px;
-}
-.sheet-modal {
+.ios .sheet-modal {
   border-radius:15px 15px 0 0;
 }
-.sheet-modal .swipe-handler {
+.ios .sheet-modal .swipe-handler {
   position: absolute;
   width: 100%;
   height: 16px;
@@ -12,7 +9,7 @@
   top: 0;
   cursor: pointer;
 }
-.sheet-modal .swipe-handler::after {
+.ios .sheet-modal .swipe-handler::after {
   content: '';
   width: 36px;
   height: 6px;
@@ -59,7 +56,8 @@ header {
 }
 
 .view-main .page-content {
-  padding-bottom: var(--f7-page-content-extra-padding-bottom,0px);
+  padding-bottom: 
+    var(--f7-page-content-extra-padding-bottom,0px);
 }
 
 #page_wrapper {
@@ -127,7 +125,7 @@ body.is_mobile #panel_selector_bar .panel_selector .icon_wrapper {
   height: var(--f7-toolbar-height);
 }
 
-#mode_selector {
+#mode_selector_container {
   height: auto;
   width: 54vw;
   margin-left: 0;

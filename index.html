@@ -95,7 +95,7 @@
 
     <script>
       var iconOverwrite = {
-        
+
       };
     </script>
 
@@ -316,13 +316,11 @@
           <div class="navbar-bg"></div>
           <div class="navbar-inner sliding">
             <div id="mode_selector_container" class="title">
+              <span v-show="!showModes()">Blockbench</span>
               <div id="mode_selector" v-if="showModes()" class="segmented segmented-strong">
-                <a class="button"
-                  v-for="mode in options"
-                  v-if="Condition(mode.condition)"
-                  v-bind:class="{'button-active': mode.selected}"
-                  v-on:mousedown="mode.select()"
-                >{{ mode.name }}</a>
+                <a class="button" v-for="mode in options" v-if="Condition(mode.condition)" v-bind:class="{'button-active': mode.selected}" v-on:mousedown="mode.select()">
+                  {{ mode.name }}
+                </a>
                 <span class="segmented-highlight"></span>
               </div>
             </div>
