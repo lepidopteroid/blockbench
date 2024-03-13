@@ -1,5 +1,5 @@
 .ios .sheet-modal {
-  border-radius:15px 15px 0 0;
+  border-radius: 15px 15px 0 0;
 }
 .ios .sheet-modal .swipe-handler {
   position: absolute;
@@ -10,7 +10,7 @@
   cursor: pointer;
 }
 .ios .sheet-modal .swipe-handler::after {
-  content: '';
+  content: "";
   width: 36px;
   height: 6px;
   position: absolute;
@@ -21,7 +21,7 @@
   border-radius: 3px;
   background: #666;
 }
-.tabbar a[href], 
+.tabbar a[href],
 .tabbar a[href]:hover,
 .bright_ui .tabbar a[href]:hover {
   text-decoration: none;
@@ -29,26 +29,18 @@
 }
 .tabbar a.tab-link-active[href],
 .tabbar-icons a.tab-link-active[href] {
-  color:
-    var(
-      --f7-tabbar-link-active-color,
-      var(--f7-theme-color)
-  );
-  background-color:
-    var(
-      --f7-tabbar-link-active-bg-color,
-      transparent
-    );
+  color: var(--f7-tabbar-link-active-color, var(--f7-theme-color));
+  background-color: var(--f7-tabbar-link-active-bg-color, transparent);
 }
 .navbar a[href],
 .list .item-link {
   text-decoration: none;
 }
 .navbar a[href]:hover {
-  color: 
-    var(--f7-navbar-link-color,
-    var(--f7-bars-link-color,
-    var(--f7-theme-color)));
+  color: var(
+    --f7-navbar-link-color,
+    var(--f7-bars-link-color, var(--f7-theme-color))
+  );
 }
 
 header {
@@ -56,8 +48,7 @@ header {
 }
 
 .view-main .page-content {
-  padding-bottom: 
-    var(--f7-page-content-extra-padding-bottom,0px);
+  padding-bottom: var(--f7-page-content-extra-padding-bottom, 0px);
 }
 
 #page_wrapper {
@@ -75,7 +66,7 @@ header {
 #dialog_wrapper .dialog {
   opacity: 1;
   margin-left: 0px;
-  z-index: 10000!important;
+  z-index: 10000 !important;
   transform: none;
   transition-duration: 0;
   transition-property: none;
@@ -83,11 +74,13 @@ header {
 }
 
 .contextMenu {
-  z-index: 10000!important;
+  z-index: 10000 !important;
 }
 
 body.is_mobile #work_screen {
-  grid-template-rows: auto minmax(200px, 5000px) 26px calc(var(--f7-toolbar-height) + var(--f7-safe-area-bottom)) !important;
+  grid-template-rows: auto minmax(200px, 5000px) 26px calc(
+      var(--f7-toolbar-height) + var(--f7-safe-area-bottom)
+    ) !important;
 }
 
 #work_screen .panel {
@@ -133,22 +126,20 @@ body.is_mobile #panel_selector_bar .panel_selector .icon_wrapper {
   text-align: center;
 }
 
-.sp-container:not(.sp-flat){
-  z-index:10000;
+.sp-container:not(.sp-flat) {
+  z-index: 10000;
 }
 
 @font-face {
-  font-family: 'Framework7 Icons';
+  font-family: "Framework7 Icons";
   font-style: normal;
   font-weight: 400;
-  src: 
-    url('../font/Framework7Icons-Regular.woff2') 
-    format('woff2');
+  src: url("../font/Framework7Icons-Regular.woff2") format("woff2");
 }
 
 .f7-icons,
 .framework7-icons {
-  font-family: 'Framework7 Icons';
+  font-family: "Framework7 Icons";
   font-weight: normal;
   font-style: normal;
   font-size: 28px;
@@ -162,9 +153,9 @@ body.is_mobile #panel_selector_bar .panel_selector .icon_wrapper {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   -moz-osx-font-smoothing: grayscale;
-  -webkit-font-feature-settings: 'liga';
-  -moz-font-feature-settings: 'liga=1';
-  -moz-font-feature-settings: 'liga';
-  font-feature-settings: 'liga';
+  -webkit-font-feature-settings: "liga";
+  -moz-font-feature-settings: "liga=1";
+  -moz-font-feature-settings: "liga";
+  font-feature-settings: "liga";
   text-align: center;
 }
