@@ -1,6 +1,16 @@
-[class^="icon-"]:not(.fa),
-[class*=" icon-"]:not(.fa) {
-  font-family: "icomoon" !important;
+@font-face {
+  font-family: "icomoon-overwrite";
+  src:
+    url("../font/icomoon-overwrite.ttf?pc1b9j") format("truetype"),
+    url("../font/icomoon-overwrite.woff?pc1b9j") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="over-"]:not(.fa),
+[class*=" over-"]:not(.fa) {
+  font-family: "icomoon-overwrite" !important;
   font-style: normal;
   font-weight: normal;
   font-variant: normal;
@@ -12,132 +22,12 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-blockbench_file:before {
-  content: "\e900";
+.over-view3d:before {
+  content: "\e930";
 }
-.icon-vertexsnap:before {
-  content: "\e901";
+.over-outliner:before {
+  content: "\e931";
 }
-.icon-create_bitmap:before {
-  content: "\e902";
-}
-.icon-objects:before {
-  content: "\e903";
-}
-.icon-bow:before {
-  content: "\e904";
-}
-.icon-bb_interface:before {
-  content: "\e905";
-}
-.icon-blockbench:before {
-  content: "\e906";
-}
-.icon-x11:before {
-  content: "\e907";
-}
-.icon-baby_zombie:before {
-  content: "\e908";
-}
-.icon-armor_stand:before {
-  content: "\e909";
-}
-.icon-armor_stand_small:before {
-  content: "\e90a";
-}
-.icon-ground:before {
-  content: "\e90b";
-}
-.icon-hud:before {
-  content: "\e90c";
-}
-.icon-inventory_full:before {
-  content: "\e90d";
-}
-.icon-inventory_nine:before {
-  content: "\e90e";
-}
-.icon-inventory_single:before {
-  content: "\e90f";
-}
-.icon-player_head:before {
-  content: "\e910";
-}
-.icon-zombie:before {
-  content: "\e911";
-}
-.icon-blockbench_inverted:before {
-  content: "\e912";
-}
-.icon-optifine_file:before {
-  content: "\e913";
-}
-.icon-saved:before {
-  content: "\e914";
-}
-.icon-player:before {
-  content: "\e915";
-}
-.icon-mirror_x:before {
-  content: "\e916";
-}
-.icon-mirror_y:before {
-  content: "\e917";
-}
-.icon-mirror_z:before {
-  content: "\e918";
-}
-.icon-sketchfab:before {
-  content: "\e919";
-}
-.icon-format_bedrock_legacy:before {
-  content: "\e91a";
-}
-.icon-crossbow:before {
-  content: "\e91b";
-}
-.icon-format_bedrock:before {
-  content: "\e91c";
-}
-.icon-format_block:before {
-  content: "\e91d";
-}
-.icon-format_free:before {
-  content: "\e91e";
-}
-.icon-format_hytale:before {
-  content: "\e91f";
-}
-.icon-format_java:before {
-  content: "\e920";
-}
-.icon-format_optifine:before {
-  content: "\e921";
-}
-.icon-gizmo:before {
-  content: "\e922";
-}
-.icon-gltf:before {
-  content: "\e923";
-}
-.icon-keyframe:before {
-  content: "\e924";
-}
-.icon-keyframe_discontinuous:before {
-  content: "\e925";
-}
-.icon-collada:before {
-  content: "\e926";
-}
-.icon-fbx:before {
-  content: "\e927";
-}
-.icon-format_bedrock_block:before {
-  content: "\e928";
-}
-.icon-format_bedrock_entity:before {
-  content: "\e929";
-}
-.icon-keyframe_bezier:before {
-  content: "\e92a";
+.over-node-texture:before {
+  content: "\e932";
 }

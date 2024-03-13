@@ -21,22 +21,25 @@
   border-radius: 3px;
   background: #666;
 }
-.tabbar a[href],
-.tabbar a[href]:hover,
-.bright_ui .tabbar a[href]:hover {
+#menu_sheet_view .list {
+  margin-bottom: 90px;
+}
+.ios .tabbar a[href],
+.ios .tabbar a[href]:hover,
+.ios .bright_ui .tabbar a[href]:hover {
   text-decoration: none;
   color: var(--f7-tabbar-link-inactive-color);
 }
-.tabbar a.tab-link-active[href],
-.tabbar-icons a.tab-link-active[href] {
+.ios .tabbar a.tab-link-active[href],
+.ios .tabbar-icons a.tab-link-active[href] {
   color: var(--f7-tabbar-link-active-color, var(--f7-theme-color));
   background-color: var(--f7-tabbar-link-active-bg-color, transparent);
 }
-.navbar a[href],
-.list .item-link {
+.ios .navbar a[href],
+.ios .list .item-link {
   text-decoration: none;
 }
-.navbar a[href]:hover {
+.ios .navbar a[href]:hover {
   color: var(
     --f7-navbar-link-color,
     var(--f7-bars-link-color, var(--f7-theme-color))
@@ -57,10 +60,6 @@ header {
 
 #start_screen {
   padding: 0;
-}
-
-#menu_sheet_view .list {
-  margin-bottom: 90px;
 }
 
 #dialog_wrapper .dialog {

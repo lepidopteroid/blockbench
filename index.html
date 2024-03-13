@@ -24,33 +24,34 @@
 		<link rel="stylesheet" href="css/framework7-tweaks.css">
 		<link rel="stylesheet" href="css/panels.css">
 		<link rel="stylesheet" href="css/dialogs.css">
+    <link rel="stylesheet" href="css/icon-overwrite.css">
 		<style type="text/css" id="theme_css"></style>
 	</head>
 	<body spellcheck="false" class="maximized">
 
 		<template id="template_menu_sheet">
-			<div id="menu_sheet" class="sheet-modal menu-sheet" style="height:70vh">
-				<div id="menu_sheet_inner" class="sheet-modal-inner">
-						<div id="menu_sheet_view" class="view sheet-view">
-								<div id="menu_sheet_main_page" class="page">
-										<div id="menu_sheet_toolbar" class="toolbar tabbar tabbar-scrollable no-outline">
-												<div id="menu_sheet_toolbar_inner" class="toolbar-inner">
-														<!-- Links Here -->
-												</div>
-										</div>
-										<swiper-container id="menu_sheet_swiper" class="tabs">
-												<!-- Swiper-Slides Here -->
-										</swiper-container>
-								</div>
-						</div>
-				</div>
-		</div>
+		  <div id="menu_sheet" class="sheet-modal menu-sheet" style="height:70vh">
+			  <div id="menu_sheet_inner" class="sheet-modal-inner">
+				  <div id="menu_sheet_view" class="view sheet-view">
+					  <div id="menu_sheet_main_page" class="page">
+						  <div id="menu_sheet_toolbar" class="toolbar tabbar tabbar-scrollable no-outline">
+							  <div id="menu_sheet_toolbar_inner" class="toolbar-inner">
+								  <!-- Links Here -->
+							  </div>
+							</div>
+							<swiper-container id="menu_sheet_swiper" class="tabs">
+							  <!-- Swiper-Slides Here -->
+						  </swiper-container>
+					  </div>
+				  </div>
+			  </div>
+		  </div>
 		</template>
 
 		<template id="template_menu_sheet_tab">
 			<swiper-slide class="page-content tab" id="">
 				<div class="list inset list-outline-ios list-strong-ios list-dividers-ios">
-						<ul></ul>
+				  <ul></ul>
 				</div>
 			</swiper-slide>
 		</template>
@@ -72,14 +73,14 @@
 
 		<template id="template_menu_sheet_child_list">
       <div class="toolbar">
-          <div class="toolbar-inner">
-              <div class="left">
-                  <a class="link back">
-                      <i class="icon icon-back"></i>
-                      <span class="if-not-md">Back</span>
-                  </a>
-              </div>
+        <div class="toolbar-inner">
+          <div class="left">
+            <a class="link back">
+              <i class="icon icon-back"></i>
+              <span class="if-not-md">Back</span>
+            </a>
           </div>
+        </div>
       </div>
       <div class="page-content">
         <div class="list inset list-outline-ios list-strong-ios list-dividers-ios">
@@ -95,8 +96,9 @@
 
     <script>
       var iconOverwrite = {
-        'outliner': 'icon-outliner',
-        'textures': 'icon-node-texture',
+        'view3d': 'over-view3d',
+        'outliner': 'over-outliner',
+        'textures': 'over-node-texture',
       };
     </script>
 
