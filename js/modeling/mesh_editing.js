@@ -614,11 +614,11 @@ BARS.defineActions(function() {
 	let previous_selection_mode = 'object';
 	new BarSelect('selection_mode', {
 		options: {
-			object: {name: true, icon: 'far.fa-gem'},
-			cluster: {name: true, icon: 'link'},
-			face: {name: true, icon: 'far.fa-square'},
-			edge: {name: true, icon: 'pen_size_3'},
-			vertex: {name: true, icon: 'fiber_manual_record'},
+			object: {name: true, icon: 'over-object-datamode'},
+			cluster: {name: true, icon: 'over-uv-islandsel'},
+			face: {name: true, icon: 'over-facesel'},
+			edge: {name: true, icon: 'over-edgesel'},
+			vertex: {name: true, icon: 'over-vertexsel'},
 		},
 		icon_mode: true,
 		condition: () => Modes.edit && Mesh.hasAny(),

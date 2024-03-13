@@ -142,6 +142,10 @@ body.is_mobile #panel_selector_bar .panel_selector .icon_wrapper {
   z-index: 10000;
 }
 
+.tool.bar_select .select_option .icon {
+  transform: none!important;
+}
+
 @font-face {
   font-family: "Framework7 Icons";
   font-style: normal;
@@ -174,4 +178,28 @@ body.is_mobile #panel_selector_bar .panel_selector .icon_wrapper {
 
 .icon-only {
   max-width: none !important;
+}
+
+@font-face {
+  font-family: 'icomoon-overwrite';
+  src:  
+    url('../font/icomoon-overwrite.ttf?vaf6fh') format('truetype'),
+    url('../font/icomoon-overwrite.woff?vaf6fh') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+.icon.overwrite {
+  font-family: 'icomoon-overwrite';
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

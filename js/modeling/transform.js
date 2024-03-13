@@ -943,13 +943,14 @@ BARS.defineActions(function() {
 			tools: ['move_tool', 'pivot_tool', 'resize_tool'],
 			method: () => !(Toolbox && Toolbox.selected.id === 'resize_tool' && Mesh.all.length === 0)
 		},
+    icon_mode: true,
 		category: 'transform',
 		value: 'local',
 		options: {
-			global: true,
-			bone: {condition: () => Format.bone_rig, name: true},
-			local: true,
-			normal: {condition: () => Mesh.selected.length, name: true}
+			global: {name: true, icon: 'over-orientation-global'},
+			bone: {condition: () => Format.bone_rig, name: true, icon: 'over-orientation-gimbal'},
+			local: {name: true, icon: 'over-orientation-local'},
+			normal: {condition: () => Mesh.selected.length, name: true, icon: 'over-orientation-normal'}
 		},
 		onChange() {
 			updateSelection();
