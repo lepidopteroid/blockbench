@@ -1,3 +1,4 @@
+/* Menu Sheet */
 .ios .sheet-modal {
   border-radius: 15px 15px 0 0;
 }
@@ -96,13 +97,11 @@ body.is_mobile .orbit_gizmo {
 body.is_mobile #panel_selector_bar .panel_selector {
   height: var(--f7-toolbar-height);
 }
-
 body.is_mobile #panel_selector_bar .panel_selector.selected {
   background-color: transparent;
   color: var(--color-accent);
   border-bottom: none;
 }
-
 body.is_mobile #panel_selector_bar .panel_selector .icon_wrapper {
   margin: 0;
   height: var(--f7-toolbar-height);
@@ -112,7 +111,7 @@ body.is_mobile #panel_selector_bar .panel_selector .icon_wrapper {
 #panel_selector_bar::before {
   content: "";
   position: absolute;
-  background-color: var(--f7-navbar-border-color, var(--f7-bars-border-color));
+  background-color: var(--f7-bars-border-color);
   display: block;
   z-index: 15;
   right: 0;
@@ -171,4 +170,8 @@ body.is_mobile #panel_selector_bar .panel_selector .icon_wrapper {
   -moz-font-feature-settings: "liga";
   font-feature-settings: "liga";
   text-align: center;
+}
+
+.icon-only {
+  max-width: none !important;
 }
