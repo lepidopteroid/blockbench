@@ -63,7 +63,7 @@ header {
   padding: 0;
 }
 
-#dialog_wrapper .dialog {
+#dialog_wrapper > * {
   opacity: 1;
   margin-left: 0px;
   z-index: 10000 !important;
