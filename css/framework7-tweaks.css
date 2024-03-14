@@ -163,6 +163,10 @@ body.is_mobile #panel_selector_bar .panel_selector .icon_wrapper i {
   justify-content: center;
   flex-wrap: nowrap;
 }
+#page_wrapper .preview .preview_menu {
+  background-color: transparent !important;
+  margin-top: 4px;
+}
 #page_wrapper .toolbar_wrapper > .toolbar.vertical .tool {
   height: 40px;
   width: 40px;
@@ -229,7 +233,6 @@ body.is_mobile #panel_selector_bar .panel_selector .icon_wrapper i {
 #main_toolbar .toolbar_wrapper.narrow > .toolbar > .content::-webkit-scrollbar-thumb {
   display: none !important;
 }
-
 .tool:active .icon {
   padding-top: 0;
 }
