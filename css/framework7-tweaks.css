@@ -268,6 +268,7 @@ body.is_mobile #panel_selector_bar .panel_selector .icon_wrapper i {
   height: 100%;
   padding: 0;
   padding-left: 0;
+  line-height: 26px;
 }
 #main_toolbar .content .tool.nslide_tool.is_colored .nslide::before {
   top: 2px;
@@ -290,6 +291,11 @@ body.is_mobile #panel_selector_bar .panel_selector .icon_wrapper i {
   align-items: center;
   justify-content: center;
   height: 100%;
+}
+
+/* Status Bar */
+#status_bar {
+  align-items: center;
 }
 
 /* Icon Fonts */
