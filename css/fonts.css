@@ -1,0 +1,13 @@
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 100 200 300 400 500 600 700 800 900;
+  src: url('../font/Geist/GeistVariableVF.woff2') format('woff2-variations');
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  font-style: normal;
+  font-weight: 100 200 300 400 500 600 700 800 900;
+  src: url('../font/Geist/GeistMonoVariableVF.woff2') format('woff2-variations');
+}
