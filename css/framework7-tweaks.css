@@ -299,14 +299,14 @@ body.theme_borders #tab_bar {
   );
   mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%,rgba(0,0,0,1) 90%,rgba(0,0,0,0) 100%);
 }
-#main_toolbar .toolbar_wrapper.narrow > .toolbar > .content::-webkit-scrollbar {
+.toolbar > .content::-webkit-scrollbar {
   -webkit-appearance: none !important;
   display: none !important;
   width: 0 !important;
   height: 0 !important;
   background-color: transparent;
 }
-#main_toolbar .toolbar_wrapper.narrow > .toolbar > .content::-webkit-scrollbar-thumb {
+.toolbar > .content::-webkit-scrollbar-thumb {
   display: none !important;
 }
 .tool:active .icon,
