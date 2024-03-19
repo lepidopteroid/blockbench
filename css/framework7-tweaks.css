@@ -2,6 +2,16 @@
 .ios .sheet-modal {
   border-radius: 15px 15px 0 0;
 }
+body.theme_borders .sheet-modal {
+  border: 0.5px solid var(--color-border);
+  border-bottom: 0px;
+}
+.sheet-modal .page {
+  background-color: var(--color-frame, var(--f7-toolbar-bg-color,var(--f7-bars-bg-color)));
+}
+.sheet-modal .toolbar {
+  background-color: var(--color-back, var(--f7-page-bg-color));
+}
 .ios .sheet-modal .swipe-handler {
   position: absolute;
   width: 100%;
@@ -25,18 +35,27 @@
 #menu_sheet_view .list {
   margin-bottom: 90px;
 }
+#menu_sheet_view .list .item-link {
+  color: var(--color-text);
+}
+#menu_sheet_view .list .item-link .item-after {
+  color: var(--color-subtle_text);
+}
+.ios .list-strong-ios ul, .list-strong ul, .md .list-strong-md ul {
+  background: var(--color-button, var(--f7-list-strong-bg-color));
+}
 .ios .tabbar a[href],
 .ios .tabbar a[href]:hover,
 .ios .bright_ui .tabbar a[href]:hover {
   text-decoration: none;
-  color: var(--f7-tabbar-link-inactive-color);
+  color: var(--color-text, (--f7-tabbar-link-inactive-color));
 }
 .ios .tabbar a.tab-link-active[href],
-.ios .tabbar-icons a.tab-link-active[href] {
-  color: var(--f7-tabbar-link-active-color, var(--f7-theme-color));
+.ios .tabbar-icons a.tab-link-active[href],
+.sheet-modal .toolbar .link {
+  color: var(--color-accent, var(--f7-tabbar-link-active-color, var(--f7-theme-color)));
   background-color: var(--f7-tabbar-link-active-bg-color, transparent);
 }
-
 /* Navbar */
 .navbar-bg {
   background: var(--color-frame,var(--f7-navbar-bg-color));
