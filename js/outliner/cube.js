@@ -894,7 +894,7 @@ class Cube extends OutlinerElement {
 }
 	Cube.prototype.title = tl('data.cube');
 	Cube.prototype.type = 'cube';
-	Cube.prototype.icon = 'fa-cube';
+	Cube.prototype.icon = 'over-cube';
 	Cube.prototype.movable = true;
 	Cube.prototype.resizable = true;
 	Cube.prototype.rotatable = true;

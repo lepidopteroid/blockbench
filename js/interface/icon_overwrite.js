@@ -14,4 +14,5 @@ var iconOverwrite = {
   'timeline': 'over-action',
   'mirror_modeling': 'over-mod-mirror',
   'toggle_shading': 'over-light-sun',
+  'add_mesh': 'over-mesh-data',
 };
