@@ -96,17 +96,6 @@
       <span class="toggle-icon"></span>
     </template>
 
-    <script>
-      var iconOverwrite = {
-        'view3d': 'over-view3d',
-        'outliner': 'over-outliner',
-        'textures': 'over-node-texture',
-        'uv': function () {
-          return (Interface.getUIMode() === 'paint') ? 'over-image' : 'over-uv';
-        },
-      };
-    </script>
-
 		<script>
 			if (typeof module === 'object') {window.module = module; module = undefined;}//jQuery Fix
 			const isApp = typeof require !== 'undefined';
@@ -172,6 +161,8 @@
     <script src="lib/fik.min.js"></script>
     <script src="lib/molang.umd.js"></script>
     <script src="lib/wintersky.umd.js"></script>
+
+    <script src="js/interface/icon_overwrite.js"></script>
     
     <script src="bundle.js"></script>
     <script src="js/preview/OrbitControls.js"></script>
