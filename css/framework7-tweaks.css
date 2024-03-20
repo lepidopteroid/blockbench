@@ -117,6 +117,12 @@ body.is_mobile #work_screen {
   display: flex;
   position: static;
 }
+#work_screen .panel .list {
+  margin: 0;
+}
+#work_screen .panel .list input[type="text"] {
+  height: auto;
+}
 body.theme_borders .panel {
   border-top: 0.5px solid var(--color-border,var(--f7-navbar-border-color,var(--f7-bars-border-color)));
 }
@@ -384,7 +390,8 @@ body.theme_borders #main_toolbar .content .tool {
   width:28px;
   border-radius: 2px;
 }
-#main_toolbar .content .tool.bar_select .select_option .icon {
+#main_toolbar .content .tool.bar_select .select_option .icon,
+#main_toolbar .content .tool .icon {
   transform: none!important;
   margin: 0;
   display: flex;
@@ -393,6 +400,8 @@ body.theme_borders #main_toolbar .content .tool {
   align-items: center;
   justify-content: center;
   height: 100%;
+  width: 28px;
+  max-width: 28px;
 }
 
 /* Status Bar */

@@ -146,7 +146,7 @@ class Preview {
 		let menu = $(`
 			<div class="preview_menu">
 				<div class="tool preview_fullscreen_button quad_view_only"><i class="material-icons">fullscreen</i></div>
-				<div class="tool preview_view_mode_menu one_is_enough"><i class="material-icons">image</i></div>
+				<div class="tool preview_view_mode_menu one_is_enough"><i class="over-shading-rendered icon overwrite"></i></div>
 				<div class="shading_placeholder"></div>
 				<div class="tool preview_main_menu"><i class="material-icons">menu</i></div>
 			</div>`)[0];
@@ -1460,7 +1460,7 @@ class Preview {
 		$('#preview').append(wrapper)
 
 		this.node.querySelectorAll('.one_is_enough').forEach(child => {
-			child.style.display = 'block';
+			child.style.display = 'flex';
 		})
 		this.node.querySelectorAll('.quad_view_only').forEach(child => {
 			child.style.display = 'none';
@@ -2476,11 +2476,11 @@ BARS.defineActions(function() {
 		value: 'textured',
 		icon_mode: true,
 		options: {
-			textured: {name: true, icon: 'image', condition: () => (!Toolbox.selected.allowed_view_modes || Toolbox.selected.allowed_view_modes.includes('textured'))},
-			solid: {name: true, icon: 'fas.fa-square', condition: () => (!Toolbox.selected.allowed_view_modes || Toolbox.selected.allowed_view_modes.includes('solid'))},
-			wireframe: {name: true, icon: 'far.fa-square', condition: () => (!Toolbox.selected.allowed_view_modes || Toolbox.selected.allowed_view_modes.includes('wireframe'))},
-			uv: {name: true, icon: 'grid_guides', condition: () => (!Toolbox.selected.allowed_view_modes || Toolbox.selected.allowed_view_modes.includes('uv'))},
-			normal: {name: true, icon: 'fa-square-caret-up', condition: () => ((!Toolbox.selected.allowed_view_modes || Toolbox.selected.allowed_view_modes.includes('normal')) && Mesh.all.length)},
+			textured: {name: true, icon: 'over-shading-rendered', condition: () => (!Toolbox.selected.allowed_view_modes || Toolbox.selected.allowed_view_modes.includes('textured'))},
+			solid: {name: true, icon: 'over-shading-solid', condition: () => (!Toolbox.selected.allowed_view_modes || Toolbox.selected.allowed_view_modes.includes('solid'))},
+			wireframe: {name: true, icon: 'over-shading-wire', condition: () => (!Toolbox.selected.allowed_view_modes || Toolbox.selected.allowed_view_modes.includes('wireframe'))},
+			uv: {name: true, icon: 'over-material-data', condition: () => (!Toolbox.selected.allowed_view_modes || Toolbox.selected.allowed_view_modes.includes('uv'))},
+			normal: {name: true, icon: 'over-overlay', condition: () => ((!Toolbox.selected.allowed_view_modes || Toolbox.selected.allowed_view_modes.includes('normal')) && Mesh.all.length)},
 		},
 		onChange() {
 			Project.view_mode = this.value;
