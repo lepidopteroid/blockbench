@@ -175,7 +175,7 @@ body.is_mobile #panel_selector_bar .panel_selector .icon_wrapper i {
 /* Mode Selector */
 #mode_selector_container {
   height: auto;
-  width: 54vw;
+  width: 30vw;
   margin-left: 0;
   margin-right: 0;
   text-align: center;

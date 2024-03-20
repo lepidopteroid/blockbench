@@ -318,7 +318,8 @@
               <span v-show="!showModes()">Blockbench</span>
               <div id="mode_selector" v-if="showModes()" class="segmented segmented-strong">
                 <a class="button" v-for="mode in options" v-if="Condition(mode.condition)" v-bind:class="{'button-active': mode.selected}" v-on:mousedown="mode.select()">
-                  {{ mode.name }}
+                  <i class="icon overwrite" v-bind:class="{'over-editmode-hlt': (mode.name === 'Edit'), 'over-tpaint-hlt': (mode.name === 'Paint'), 'over-pose-hlt': (mode.name === 'Animate') }"></i>
+                  <!-- {{ mode.name }} -->
                 </a>
                 <span class="segmented-highlight"></span>
               </div>
