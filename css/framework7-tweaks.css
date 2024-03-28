@@ -235,6 +235,9 @@ body.is_mobile #page_wrapper .toolbar_wrapper.narrow.tools{
 #page_wrapper .toolbar.vertical .tool.side_menu_tool > .action_more_options {
   display: none;
 }
+#page_wrapper .toolbar.vertical .tool.side_menu_tool > i.icon.action_more_options:hover {
+  color: var(--color-text);
+}
 #page_wrapper .toolbar.vertical .tool.side_menu_tool.enabled > .action_more_options {
   position: absolute;
   display: block;
@@ -344,11 +347,13 @@ body.theme_borders #tab_bar {
   margin: 0 4px;
 }
 #main_toolbar .content .tool {
+  display: flex;
   width: 28px;
   height: 28px;
   margin-left: 3px;
   margin-right: 3px;
   flex-shrink: 0;
+  flex-basis: content;
   border-radius: var(--f7-button-border-radius);
   background-color: var(--color-button);
 }
@@ -359,16 +364,47 @@ body.theme_borders #main_toolbar .content .tool {
   background-color: var(--color-accent);
   color: var(--color-accent_text);
 }
+#main_toolbar .content .tool.enabled .icon.action_more_options {
+  color: var(--color-accent_text);
+}
 #main_toolbar .content .tool.widget {
   width: auto;
   overflow: hidden;
 }
 #main_toolbar .content div.tool.wide {
+  position: relative;
   min-width: 72px;
   padding: 0; 
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-content: center;
+}
+#main_toolbar .content div.tool.wide .nslide {
+  position: absolute;
+}
+#main_toolbar .content div.tool.wide .nslide_arrow {
+  margin:0!important;
+  flex-shrink: 0;
+  position: static;
 }
 #main_toolbar .content .tool.bar_select.icon_mode {
   padding: 0;
+}
+#main_toolbar .content .tool.bar_select bb-select {
+  padding-top: 0px;
+  padding-right: 28px;
+  line-height: 28px;
+}
+#main_toolbar .content .tool.bar_select bb-select::before {
+  font-family: 'Material Icons';
+  content: "\e5c5";
+  font-size: 22px;
+  width: 28px;
+  height: 28px;
+  top: 0px;
+  right: 0px;
+  text-align: center;
 }
 #main_toolbar .content div.nslide {
   width: 100%;
@@ -386,6 +422,14 @@ body.theme_borders #main_toolbar .content .tool {
   height: 4px;
   background-color: var(--corner-color);
 }
+#main_toolbar .content .tool.nslide_tool.has_percentage_bar .nslide::after {
+  top: 2px;
+  left: 2px;
+  bottom: auto;
+  height: 4px;
+  border-radius: 1em;
+  width: calc(var(--percentage) * 1% - 4px);
+}
 #main_toolbar .content .tool.bar_select .select_option {
   width:28px;
   border-radius: 2px;
@@ -402,6 +446,9 @@ body.theme_borders #main_toolbar .content .tool {
   height: 100%;
   width: 28px;
   max-width: 28px;
+}
+body.theme_borders #main_toolbar .content .tool .icon.action_more_options {
+  border-left: 0.5px solid var(--color-border);
 }
 
 /* Status Bar */
