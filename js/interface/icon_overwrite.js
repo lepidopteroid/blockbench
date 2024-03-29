@@ -15,4 +15,7 @@ var iconOverwrite = {
   'mirror_modeling': 'over-mod-mirror',
   'toggle_shading': 'over-light-sun',
   'add_mesh': 'over-mesh-data',
+  'add_cube': 'over-cube',
+  'add_group': 'over-group-bone',
+  'outliner_toggle': 'over-preset',
 };

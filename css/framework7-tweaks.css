@@ -155,6 +155,28 @@ body.theme_borders .panel {
       var(--f7-navbar-border-color, var(--f7-bars-border-color))
     );
 }
+#work_screen .panel .bar {
+  color: var(--color-subtle_text);
+}
+#work_screen .panel .bar.next_to_title {
+  position: absolute;
+  float: none;
+  height: 32px;
+  top: -32px;
+  right: 60px;
+  line-height: 32px;
+  margin: 0;
+}
+#work_screen .panel .bar.next_to_title #uv_resolution_status {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  line-height: 32px;
+}
+body.is_touch #work_screen .panel h3.panel_handle > .tool.panel_control {
+  flex-basis: 40px;
+  margin-right: 10px;
+}
 
 /* Gizmo */
 body.is_mobile .orbit_gizmo {
