@@ -177,6 +177,15 @@ body.is_touch #work_screen .panel h3.panel_handle > .tool.panel_control {
   flex-basis: 40px;
   margin-right: 10px;
 }
+#work_screen #bottom_slot .toolbar {
+  height: 30px;
+  margin: 0 var(--f7-toolbar-inner-padding-left);
+}
+#work_screen #bottom_slot .toolbar .tool {
+  width: 24px;
+  height: 24px;
+  margin: 0 3px;
+}
 
 /* Gizmo */
 body.is_mobile .orbit_gizmo {

@@ -18,4 +18,5 @@ var iconOverwrite = {
   'add_cube': 'over-cube',
   'add_group': 'over-group-bone',
   'outliner_toggle': 'over-preset',
+  // 'search_outliner': 'over-zoom-in',
 };
