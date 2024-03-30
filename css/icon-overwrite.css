@@ -1,3 +1,9 @@
+.over-search:before {
+  content: "\eb1a";
+}
+.over-anchor:before {
+  content: "\eb1b";
+}
 .over-aliased:before {
   content: "\e903";
 }

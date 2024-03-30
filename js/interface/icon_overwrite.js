@@ -17,6 +17,11 @@ var iconOverwrite = {
   'add_mesh': 'over-mesh-data',
   'add_cube': 'over-cube',
   'add_group': 'over-group-bone',
+  'add_null_object': 'over-empty-axis',
+  'add_locator': 'over-anchor',
   'outliner_toggle': 'over-preset',
+  'edit_history': 'over-recover-last',
+  'undo': 'over-loop-back',
+  'redo': 'over-loop-forwards',
   // 'search_outliner': 'over-zoom-in',
 };

@@ -16,22 +16,22 @@ const Outliner = {
 		visibility: {
 			id: 'visibility',
 			title: tl('switches.visibility'),
-			icon: ' fa fa-eye',
-			icon_off: ' fa fa-eye-slash',
+			icon: 'icon overwrite over-hide-off',
+			icon_off: 'icon overwrite over-hide-on',
 			advanced_option: false
 		},
 		locked: {
 			id: 'locked',
 			title: tl('switches.lock'),
-			icon: ' fas fa-lock',
-			icon_off: ' fas fa-lock-open',
+			icon: 'icon overwrite over-decorate-locked',
+			icon_off: 'icon overwrite over-decorate-unlocked',
 			advanced_option: true
 		},
 		export: {
 			id: 'export',
 			title: tl('switches.export'),
-			icon: ' fa fa-camera',
-			icon_off: ' far fa-window-close',
+			icon: 'icon overwrite over-restrict-render-off',
+			icon_off: 'icon overwrite over-restrict-render-on',
 			advanced_option: true
 		},
 		shade: {
@@ -1347,9 +1347,10 @@ Interface.definePanels(function() {
 
 	var VueTreeItem = Vue.extend({
 		template: 
-		'<li class="outliner_node" v-bind:class="{ parent_li: node.children && node.children.length > 0}" v-bind:id="node.uuid">' +
+    '<span>' +
+		'<li class="swipeout outliner_node" v-bind:class="{ parent_li: node.children && node.children.length > 0}" v-bind:id="node.uuid" @swipeout:deleted="node.remove()">' +
 			`<div
-				class="outliner_object"
+				class="item-content swipeout-content outliner_object"
 				v-bind:class="{ cube: node.type === 'cube', group: node.type === 'group', selected: node.selected }"
 				v-bind:style="{'padding-left': indentation + 'px'}"
 				@contextmenu.prevent.stop="node.showContextMenu($event)"
@@ -1375,12 +1376,17 @@ Interface.definePanels(function() {
 					@click.stop
 				></i>` +
 			'</div>' +
+      `<div class="swipeout-actions-right">
+          <a href="#" class="swipeout-close" @click="node.duplicate()"><i class="material-icons notranslate icon">content_copy</i></a>
+          <a href="#" class="swipeout-delete swipeout-overswipe"><i class="material-icons notranslate icon">delete</i></a>
+       </div>` +
+       '</li>' +
 			//Other Entries
 			'<ul v-if="node.isOpen">' +
 				'<vue-tree-item v-for="item in visible_children" :node="item" :depth="depth + 1" :options="options" :key="item.uuid"></vue-tree-item>' +
 				`<div class="outliner_line_guide" v-if="node.constructor.selected == node" v-bind:style="{left: indentation + 'px'}"></div>` +
 			'</ul>' +
-		'</li>',
+    '</span>',
 		props: {
 			options: Object,
 			node: {
@@ -1735,10 +1741,10 @@ Interface.definePanels(function() {
 				}
 			},
 			template: `
-				<div>
+				<div class="list simple-list list-dividers-ios">
 					<search-bar id="outliner_search_bar" v-if="search_enabled" v-model="options.search_term" @input="updateSearch()" onfocusout="Panels.outliner.vue.updateSearch()" />
 					<ul id="cubes_list"
-						class="list mobile_scrollbar"
+						class="mobile_scrollbar"
 						@contextmenu.stop.prevent="openMenu($event)"
 						@mousedown="dragNode($event)"
 						@touchstart="dragNode($event)"
