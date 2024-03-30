@@ -1352,7 +1352,7 @@ Interface.definePanels(function() {
 			`<div
 				class="item-content swipeout-content outliner_object"
 				v-bind:class="{ cube: node.type === 'cube', group: node.type === 'group', selected: node.selected }"
-				v-bind:style="{'padding-left': indentation + 'px'}"
+				v-bind:style="{'padding-left': indentation + 16 + 'px'}"
 				@contextmenu.prevent.stop="node.showContextMenu($event)"
 				@click="node.select($event, true)"
 				@touchstart="node.select($event)" :title="node.title"
@@ -1399,7 +1399,7 @@ Interface.definePanels(function() {
 		}},
 		computed: {
 			indentation() {
-				return limitNumber(this.depth, 0, (this.width-100) / 16) * 16;
+				return limitNumber(this.depth, 0, (this.width-100) / 16) * 20;
 			},
 			visible_children() {
 				let filtered = this.node.children;

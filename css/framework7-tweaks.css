@@ -186,6 +186,28 @@ body.is_touch #work_screen .panel h3.panel_handle > .tool.panel_control {
   height: 24px;
   margin: 0 3px;
 }
+#work_screen .panel .list li {
+  padding: 0;
+  height: 32px;
+}
+#work_screen .panel .list li::after {
+  display: none;
+}
+li.swipeout a {
+  text-decoration: none;
+}
+#work_screen .panel .outliner_object {
+  padding: 0;
+  padding-right: var(--f7-list-item-padding-horizontal);
+  min-height: 32px;
+  height: 32px;
+}
+#work_screen .panel .list ul ul {
+  padding: 0;
+}
+#work_screen .panel #cubes_list .outliner_line_guide {
+  margin-left: 24px;
+}
 
 /* Gizmo */
 body.is_mobile .orbit_gizmo {
