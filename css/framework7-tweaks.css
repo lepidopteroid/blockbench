@@ -202,6 +202,18 @@ li.swipeout a {
 #work_screen .panel .list .swipeout-actions-right a {
   padding: 0 19px;
 }
+.molang_input.prism-editor-component {
+  padding: 10px;
+
+  .prism-editor-wrapper {
+    border: none;
+    border-radius: 4px;
+  }
+}
+.panel p {
+  margin: 0;
+  padding: 4px 10px;
+}
 
 /* Gizmo */
 body.is_mobile .orbit_gizmo {
@@ -668,12 +680,19 @@ body.theme_borders #mode_selector {
           height: 32px;
           margin: 0;
 
+          .toolbar_separator.spacer {
+            min-width: 16px;
+          }
+
           .tool {
             flex-shrink: 0;
             width: 24px;
+            min-width: 24px;
             height: 24px;
             margin: 0 3px;
             border-radius: 4px;
+            border: none;
+            background: none;
 
             &.toolbar_menu {
               width: 32px;
@@ -702,7 +721,41 @@ body.theme_borders #mode_selector {
 
           .content {
             flex-grow: 1;
-            padding: 0 20px 0 8px;
+            padding: 0 8px;
+
+            .tool {
+
+              &.nslide_tool {
+
+                .nslide {
+                  line-height: 24px;
+                }
+
+                .nslide_arrow {
+                  margin: 0 !important;
+                  flex-shrink: 0;
+                  position: static;
+                  height: 24px;
+                  line-height: 20px;
+
+                  i {
+                    margin: 0;
+                    display: inline;
+                    vertical-align: middle;
+                  }
+                }
+              }
+
+              input[type="range"] {
+                height: 24px;
+              }
+
+              .icon {
+                width: 24px;
+                max-width: 24px;
+                height: 24px;
+              }
+            }
           }
         }
       }
