@@ -23,5 +23,5 @@ var iconOverwrite = {
   'edit_history': 'over-recover-last',
   'undo': 'over-loop-back',
   'redo': 'over-loop-forwards',
-  // 'search_outliner': 'over-zoom-in',
+  'search_outliner': 'over-search',
 };
