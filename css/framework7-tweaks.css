@@ -902,7 +902,7 @@ body.theme_borders #start_screen section {
 #start_screen .start_screen_graphic_description {
   left: 36px;
   right: auto;
-  padding: 0.4em 0.9em;
+  padding: 0 0.9em;
   background: rgba(0, 0, 0, 0.6);
   margin: 0;
   bottom: 8px;
@@ -916,6 +916,7 @@ body.theme_borders #start_screen section {
   overflow: hidden;
   text-overflow: ellipsis;
   height: 20px;
+  line-height: 20px;
 }
 
 .start_screen_graphic_description p {
