@@ -900,20 +900,22 @@ body.theme_borders #start_screen section {
 }
 
 #start_screen .start_screen_graphic_description {
-  left: 12px;
+  left: 36px;
   right: auto;
   padding: 0.4em 0.9em;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.6);
   margin: 0;
   bottom: 8px;
   border-radius: 999px;
   font-family: monospace;
-  font-size: 9px;
+  font-size: 8px;
   backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 0.5px solid rgba(255,255,255, 0.2);
-  max-width: 75vw;
+  max-width: 72vw;
   overflow: hidden;
   text-overflow: ellipsis;
+  height: 20px;
 }
 
 .start_screen_graphic_description p {
@@ -947,6 +949,25 @@ body.theme_borders #start_screen section {
 
 .splash_art_slideshow_points > li.selected::after {
   background-color: #FFF;
+}
+
+#start_screen #splash_screen i.start_screen_close_button {
+  bottom: 8px;
+  top: auto;
+  right: auto;
+  left: 12px;
+  font-size: 12px;
+  background: rgba(0,0,0,0.6);
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  border: 0.5px solid rgba(255,255,255,0.2);
+  text-align: center;
+  line-height: 19px;
+  display: block;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  opacity: 1;
 }
 
 /* Icon Fonts */
