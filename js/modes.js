@@ -131,7 +131,23 @@ onVueSetup(function() {
 			},
 			Condition
 		}
-	})
+	});
+  Modes.buttonsVue = new Vue({
+		el: '#navbar_action_controls',
+		data: {
+			options: Modes.options
+		},
+		methods: {
+			showModes() {
+				let count = 0;
+				for (let key in this.options) {
+					if (Condition(this.options[key].condition)) count++;
+				}
+				return count > 1;
+			},
+			Condition
+		}
+	});
 });
 BARS.defineActions(function() {
 	new Mode('edit', {

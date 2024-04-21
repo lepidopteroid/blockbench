@@ -84,6 +84,7 @@ class ModelFormat {
 		Interface.status_bar.vue.Format = this;
 		UVEditor.vue.cube_uv_rotation = this.uv_rotation;
 		Modes.vue.$forceUpdate()
+    Modes.buttonsVue.$forceUpdate()
 		updateInterfacePanels()
 		Canvas.updateShading();
 		Canvas.updateRenderSides()

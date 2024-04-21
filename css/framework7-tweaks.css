@@ -275,6 +275,9 @@ body.is_mobile #panel_selector_bar .panel_selector .icon_wrapper i {
 }
 
 /* Mode Selector */
+#navbar_action_controls {
+  min-width: 104px;
+}
 #mode_selector_container {
   height: auto;
   width: 30vw;
