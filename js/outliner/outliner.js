@@ -1348,7 +1348,7 @@ Interface.definePanels(function() {
 	var VueTreeItem = Vue.extend({
 		template: 
     '<span>' +
-		'<li class="swipeout outliner_node" v-bind:class="{ parent_li: node.children && node.children.length > 0}" v-bind:id="node.uuid" @swipeout:deleted="node.remove()">' +
+		`<li class="swipeout outliner_node" v-bind:class="{ parent_li: node.children && node.children.length > 0}" v-bind:id="node.uuid" @swipeout:deleted="BarItems['delete'].trigger()">` +
 			`<div
 				class="item-content swipeout-content outliner_object"
 				v-bind:class="{ cube: node.type === 'cube', group: node.type === 'group', selected: node.selected }"
@@ -1377,7 +1377,7 @@ Interface.definePanels(function() {
 				></i>` +
 			'</div>' +
       `<div class="swipeout-actions-right">
-          <a href="#" class="swipeout-close" @click="node.duplicate()"><i class="material-icons notranslate icon">content_copy</i></a>
+          <a href="#" class="swipeout-close" @click="BarItems['duplicate'].trigger()"><i class="material-icons notranslate icon">content_copy</i></a>
           <a href="#" class="swipeout-delete swipeout-overswipe"><i class="material-icons notranslate icon">delete</i></a>
        </div>` +
        '</li>' +
