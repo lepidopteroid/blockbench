@@ -535,6 +535,9 @@ onVueSetup(function () {
   Blockbench.on("construct_format delete_format", () => {
     StartScreen.vue.$forceUpdate();
   });
+  Blockbench.on('close_project', (event) => {
+    Modes.buttonsVue.$forceUpdate();
+  });
 
   if (settings.streamer_mode.value) {
     updateStreamerModeNotification();

@@ -315,10 +315,10 @@
           <div class="navbar-bg"></div>
           <div class="navbar-inner sliding">
             <div class="left" id="navbar_action_controls">
-              <a href="#" v-on:mousedown="BarItems['undo'].trigger()" class="link icon-only" v-if="showModes()">
+              <a href="#" v-on:mousedown="BarItems['undo'].trigger()" class="link icon-only" v-show="showModes()">
                 <i class="f7-icons if-not-md">arrow_uturn_left_circle</i>
               </a>
-              <a href="#" v-on:mousedown="BarItems['redo'].trigger()" class="link icon-only" v-if="showModes()">
+              <a href="#" v-on:mousedown="BarItems['redo'].trigger()" class="link icon-only" v-show="showModes()">
                 <i class="f7-icons if-not-md">arrow_uturn_right_circle</i>
               </a>
             </div>
