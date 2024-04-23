@@ -193,7 +193,7 @@ class SheetMenu extends Menu {
       ) {
         $(entryLink).on('click', e => {
           object.click(context, e);
-          parent.sheet.close();
+          //parent.sheet.close();
         });
       } else if (!object.children) {
         $(entryLink).on('click', e => {
@@ -313,6 +313,14 @@ class MenuSheet {
       url: '/',
       routes: [],
     });
+
+    this.routes['/'] = {
+      path: '/',
+      el: document.querySelector(
+        "#menu_sheet_main_page"
+      ),
+      keepAlive: true,
+    };
 
     this.swiper = this.app.swiper.get(
       this.app.$('#menu_sheet_swiper')
