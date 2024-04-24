@@ -1,5 +1,3 @@
-(function() {
-
 function buildForm(dialog) {
 	let dialog_content = $(dialog.object).find('.dialog_content')
 	for (let form_id in dialog.form) {
@@ -1089,8 +1087,6 @@ window.MessageBox = class MessageBox extends Dialog {
 		this.object = null;
 	}
 }
-
-})()
 
 // Legacy Dialog
 function showDialog() {
