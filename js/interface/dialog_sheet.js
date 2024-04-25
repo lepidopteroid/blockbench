@@ -3,7 +3,10 @@ window.Dialog = class DialogSheet extends oldDialog {
 	
   constructor(id, options) {
     super(id, options);
+    console.log(`Dialog created: '${this.id}'`);
+	};
 
+  build() {
     this.object = document.createElement('div');
     this.object.classList.add('page');
 
@@ -23,10 +26,6 @@ window.Dialog = class DialogSheet extends oldDialog {
     menuSheet.routes.push(this.page);
     menuSheet.update();
 
-    console.log(`Dialog created: '${this.id}'`);
-	};
-
-  build() {
     this.part_order.forEach(part => {
 			if (part == 'form' && this.form) { 
         buildForm(this); 
@@ -77,7 +76,7 @@ window.Dialog = class DialogSheet extends oldDialog {
   };
 
   show() {
-    this.build();
+    if (!this.object) this.build();
 
     console.log(`Show dialog: ${this.path}`);
 
