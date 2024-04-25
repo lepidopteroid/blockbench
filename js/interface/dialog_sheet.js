@@ -3,7 +3,31 @@ window.Dialog = class DialogSheet extends oldDialog {
 	
   constructor(id, options) {
     super(id, options);
-    console.log(`Dialog created: '${this.id}'`);
+	};
+
+  close(button, event) {
+		if (
+      button == this.confirmIndex && 
+      typeof this.onConfirm == 'function'
+    ) {
+			let formResult = this.getFormResult();
+			let result = this.onConfirm(formResult, event);
+			if (result === false) return;
+		};
+		if (
+      button == this.cancelIndex && 
+      typeof this.onCancel == 'function'
+    ) {
+			let result = this.onCancel(event);
+			if (result === false) return;
+		};
+		if (
+      typeof this.onButton == 'function'
+    ) {
+			let result = this.onButton(button, event);
+			if (result === false) return;
+		};
+		this.hide();
 	};
 
   build() {
@@ -65,7 +89,7 @@ window.Dialog = class DialogSheet extends oldDialog {
 
 			buttons.forEach((button, i) => {
 				button_bar.append(button)
-			})
+			});
 
 			this.object.querySelector(
         '.dialog_wrapper'
@@ -86,6 +110,7 @@ window.Dialog = class DialogSheet extends oldDialog {
       clearPreviousHistory: false,
     };
 
+    // jump immediately to page if sheet is closed
     if (!menuSheet.sheet.opened) {
       showOptions.animate = false;
     };
@@ -95,6 +120,31 @@ window.Dialog = class DialogSheet extends oldDialog {
     );
     menuSheet.sheet.open();
 
+    if (typeof this.onOpen == 'function') {
+			this.onOpen();
+		};
+
     return this;
   };
+
+  hide() {
+		$('#blackout').hide().toggleClass(
+      'darken', 
+      true
+    );
+		open_dialog = false;
+		open_interface = false;
+		Dialog.open = null;
+		Dialog.stack.remove(this);
+		Prop.active_panel = Prop._previous_active_panel;
+
+    menuSheet.sheet.once('closed', (sheet) => {
+      menuSheet.view.router.back({
+        animate: false,
+      });
+    });
+    menuSheet.sheet.close();
+    
+		return this;
+	};
 };
