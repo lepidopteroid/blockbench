@@ -1,34 +1,34 @@
 let oldDialog = window.Dialog;
 window.Dialog = class DialogSheet extends oldDialog {
-	
+  
   constructor(id, options) {
     super(id, options);
-	};
+  };
 
   close(button, event) {
-		if (
+    if (
       button == this.confirmIndex && 
       typeof this.onConfirm == 'function'
     ) {
-			let formResult = this.getFormResult();
-			let result = this.onConfirm(formResult, event);
-			if (result === false) return;
-		};
-		if (
+      let formResult = this.getFormResult();
+      let result = this.onConfirm(formResult, event);
+      if (result === false) return;
+    };
+    if (
       button == this.cancelIndex && 
       typeof this.onCancel == 'function'
     ) {
-			let result = this.onCancel(event);
-			if (result === false) return;
-		};
-		if (
+      let result = this.onCancel(event);
+      if (result === false) return;
+    };
+    if (
       typeof this.onButton == 'function'
     ) {
-			let result = this.onButton(button, event);
-			if (result === false) return;
-		};
-		this.hide();
-	};
+      let result = this.onButton(button, event);
+      if (result === false) return;
+    };
+    this.hide();
+  };
 
   build() {
     this.object = document.createElement('div');
@@ -51,50 +51,50 @@ window.Dialog = class DialogSheet extends oldDialog {
     menuSheet.update();
 
     this.part_order.forEach(part => {
-			if (part == 'form' && this.form) { 
+      if (part == 'form' && this.form) { 
         buildForm(this); 
       };
-			if (part == 'lines' && this.lines) {
+      if (part == 'lines' && this.lines) {
         buildLines(this);
       }; 
-			if (part == 'component' && this.component) {
+      if (part == 'component' && this.component) {
         buildComponent(this);
       }; 
-		});
+    });
 
     if (this.buttons.length) {
-			let buttons = [];
-			this.buttons.forEach((b, i) => {
-				let btn = Interface.createElement(
+      let buttons = [];
+      this.buttons.forEach((b, i) => {
+        let btn = Interface.createElement(
           'button', 
           {type: 'button'}, 
           tl(b)
         );
-				buttons.push(btn);
-				btn.addEventListener('click', (event) => {
-					this.close(i, event);
-				});
-			});
-			buttons[this.confirmIndex] && 
+        buttons.push(btn);
+        btn.addEventListener('click', (event) => {
+          this.close(i, event);
+        });
+      });
+      buttons[this.confirmIndex] && 
         buttons[this.confirmIndex].classList.add(
           'confirm_btn'
         );
-			buttons[this.cancelIndex] && 
+      buttons[this.cancelIndex] && 
         buttons[this.cancelIndex].classList.add(
           'cancel_btn'
         );
-			let button_bar = $(
+      let button_bar = $(
         '<div class="dialog_bar button_bar"></div>'
       );
 
-			buttons.forEach((button, i) => {
-				button_bar.append(button)
-			});
+      buttons.forEach((button, i) => {
+        button_bar.append(button)
+      });
 
-			this.object.querySelector(
+      this.object.querySelector(
         '.dialog_wrapper'
       ).append(button_bar[0]);
-		};
+    };
 
     return this;
   };
@@ -129,25 +129,25 @@ window.Dialog = class DialogSheet extends oldDialog {
     menuSheet.sheet.open();
 
     if (typeof this.onOpen == 'function') {
-			this.onOpen();
-		};
+      this.onOpen();
+    };
 
     return this;
   };
 
   hide() {
-		$('#blackout').hide().toggleClass(
+    $('#blackout').hide().toggleClass(
       'darken', 
       true
     );
-		open_dialog = false;
-		open_interface = false;
-		Dialog.open = null;
-		Dialog.stack.remove(this);
-		Prop.active_panel = Prop._previous_active_panel;
+    open_dialog = false;
+    open_interface = false;
+    Dialog.open = null;
+    Dialog.stack.remove(this);
+    Prop.active_panel = Prop._previous_active_panel;
 
     menuSheet.sheet.close();
     
-		return this;
-	};
+    return this;
+  };
 };
