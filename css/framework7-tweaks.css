@@ -116,6 +116,9 @@ header {
 #start_screen {
   padding: 0;
 }
+.dialog_wrapper {
+  margin: 0 16px;
+}
 
 #dialog_wrapper > * {
   opacity: 1;
@@ -128,7 +131,7 @@ header {
 }
 
 .contextMenu {
-  z-index: 10000 !important;
+  z-index: 99999 !important;
 }
 
 body.is_mobile #work_screen {

@@ -114,10 +114,18 @@ window.Dialog = class DialogSheet extends oldDialog {
     if (!menuSheet.sheet.opened) {
       showOptions.animate = false;
     };
+    
     menuSheet.view.router.navigate(
       this.path,
       showOptions,
     );
+
+    menuSheet.sheet.once('closed', (sheet) => {
+      menuSheet.view.router.back({
+        animate: false,
+      });
+    });
+
     menuSheet.sheet.open();
 
     if (typeof this.onOpen == 'function') {
@@ -138,11 +146,6 @@ window.Dialog = class DialogSheet extends oldDialog {
 		Dialog.stack.remove(this);
 		Prop.active_panel = Prop._previous_active_panel;
 
-    menuSheet.sheet.once('closed', (sheet) => {
-      menuSheet.view.router.back({
-        animate: false,
-      });
-    });
     menuSheet.sheet.close();
     
 		return this;
