@@ -1,181 +1,194 @@
 var onUninstall, onInstall;
 const Plugins = {
-  Vue: [], //Vue Object
-  installed: [], //Simple List of Names
-  json: undefined, //Json from website
-  download_stats: {},
-  all: [], //Vue Object Data
-  registered: {},
-  currently_loading: "",
-  api_path: settings.cdn_mirror.value
-    ? "https://blckbn.ch/cdn/plugins"
-    : "https://cdn.jsdelivr.net/gh/JannisX11/blockbench-plugins/plugins",
-  devReload() {
-    var reloads = 0;
-    for (var i = Plugins.all.length - 1; i >= 0; i--) {
-      if (Plugins.all[i].source == "file") {
-        Plugins.all[i].reload();
-        reloads++;
-      }
-    }
-    Blockbench.showQuickMessage(tl("message.plugin_reload", [reloads]));
-    console.log("Reloaded " + reloads + " plugin" + pluralS(reloads));
-  },
-  sort() {
-    Plugins.all.sort((a, b) => {
-      if (a.tags.find((tag) => tag.match(/deprecated/i))) return 1;
-      if (b.tags.find((tag) => tag.match(/deprecated/i))) return -1;
-      let download_difference =
-        (Plugins.download_stats[b.id] || 0) -
-        (Plugins.download_stats[a.id] || 0);
-      if (download_difference) {
-        return download_difference;
-      } else {
-        return sort_collator.compare(a.title, b.title);
-      }
-    });
-  },
-};
-StateMemory.init("installed_plugins", "array");
-Plugins.installed = StateMemory.installed_plugins =
-  StateMemory.installed_plugins.filter((p) => p && typeof p == "object");
+	Vue: [],			//Vue Object
+	installed: [], 		//Simple List of Names
+	json: undefined,	//Json from website
+	download_stats: {},
+	all: [],			//Vue Object Data
+	registered: {},
+	currently_loading: '',
+	api_path: settings.cdn_mirror.value ? 'https://blckbn.ch/cdn/plugins' : 'https://cdn.jsdelivr.net/gh/JannisX11/blockbench-plugins/plugins',
+	devReload() {
+		let reloads = 0;
+		for (let i = Plugins.all.length-1; i >= 0; i--) {
+			let plugin = Plugins.all[i];
+			if (plugin.source == 'file' && plugin.isReloadable()) {
+				Plugins.all[i].reload()
+				reloads++;
+			}
+		}
+		Blockbench.showQuickMessage(tl('message.plugin_reload', [reloads]))
+		console.log('Reloaded '+reloads+ ' plugin'+pluralS(reloads))
+	},
+	sort() {
+		Plugins.all.sort((a, b) => {
+			if (a.tags.find(tag => tag.match(/deprecated/i))) return 1;
+			if (b.tags.find(tag => tag.match(/deprecated/i))) return -1;
+			let download_difference = (Plugins.download_stats[b.id] || 0) - (Plugins.download_stats[a.id] || 0);
+			if (download_difference) {
+				return download_difference
+			} else {
+				return sort_collator.compare(a.title, b.title);
+			}
+		});
+	}
+}
+StateMemory.init('installed_plugins', 'array')
+Plugins.installed = StateMemory.installed_plugins = StateMemory.installed_plugins.filter(p => p && typeof p == 'object');
 
 class Plugin {
-  constructor(id, data) {
-    this.id = id || "unknown";
-    this.installed = false;
-    this.title = "";
-    this.author = "";
-    this.description = "";
-    this.about = "";
-    this.icon = iconOverwrite[this.id] || "";
-    this.tags = [];
-    this.dependencies = [];
-    this.version = "0.0.1";
-    this.variant = "both";
-    this.min_version = "";
-    this.max_version = "";
-    this.website = "";
-    this.source = "store";
-    this.creation_date = 0;
-    this.await_loading = false;
-    this.details = null;
-    this.about_fetched = false;
-    this.disabled = false;
-    this.new_repository_format = false;
-    this.cache_version = 0;
+	constructor(id, data) {
+		this.id = id||'unknown';
+		this.installed = false;
+		this.title = '';
+		this.author = '';
+		this.description = '';
+		this.about = '';
+		this.icon = '';
+		this.tags = [];
+		this.dependencies = [];
+		this.version = '0.0.1';
+		this.variant = 'both';
+		this.min_version = '';
+		this.max_version = '';
+		this.deprecation_note = '';
+		this.website = '';
+		this.source = 'store';
+		this.creation_date = 0;
+		this.contributes = {};
+		this.await_loading = false;
+		this.has_changelog = false;
+		this.changelog = null;
+		this.details = null;
+		this.about_fetched = false;
+		this.changelog_fetched = false;
+		this.disabled = false;
+		this.new_repository_format = false;
+		this.cache_version = 0;
 
     this.extend(data);
 
-    Plugins.all.safePush(this);
-  }
-  extend(data) {
-    if (!(data instanceof Object)) return this;
-    Merge.boolean(this, data, "installed");
-    Merge.string(this, data, "title");
-    Merge.string(this, data, "author");
-    Merge.string(this, data, "description");
-    Merge.string(this, data, "about");
-    Merge.string(this, data, "icon");
-    Merge.string(this, data, "version");
-    Merge.string(this, data, "variant");
-    Merge.string(this, data, "min_version");
-    Merge.string(this, data, "max_version");
-    Merge.string(this, data, "website");
-    Merge.string(this, data, "repository");
-    Merge.string(this, data, "bug_tracker");
-    Merge.boolean(this, data, "await_loading");
-    Merge.boolean(this, data, "disabled");
-    if (data.creation_date) this.creation_date = Date.parse(data.creation_date);
-    if (data.tags instanceof Array)
-      this.tags.safePush(...data.tags.slice(0, 3));
-    if (data.dependencies instanceof Array)
-      this.dependencies.safePush(...data.dependencies);
+		Plugins.all.safePush(this);
+	}
+	extend(data) {
+		if (!(data instanceof Object)) return this;
+		Merge.boolean(this, data, 'installed')
+		Merge.string(this, data, 'title')
+		Merge.string(this, data, 'author')
+		Merge.string(this, data, 'description')
+		Merge.string(this, data, 'about')
+		Merge.string(this, data, 'icon')
+		Merge.string(this, data, 'version')
+		Merge.string(this, data, 'variant')
+		Merge.string(this, data, 'min_version')
+		Merge.string(this, data, 'max_version')
+		Merge.string(this, data, 'deprecation_note')
+		Merge.string(this, data, 'website')
+		Merge.string(this, data, 'repository')
+		Merge.string(this, data, 'bug_tracker')
+		Merge.boolean(this, data, 'await_loading');
+		Merge.boolean(this, data, 'has_changelog');
+		Merge.boolean(this, data, 'disabled');
+		if (data.creation_date) this.creation_date = Date.parse(data.creation_date);
+		if (data.tags instanceof Array) this.tags.safePush(...data.tags.slice(0, 3));
+		if (data.dependencies instanceof Array) this.dependencies.safePush(...data.dependencies);
 
-    if (data.new_repository_format) this.new_repository_format = true;
-    if (this.min_version != "" && !compareVersions("4.8.0", this.min_version)) {
-      this.new_repository_format = true;
-    }
+		if (data.new_repository_format) this.new_repository_format = true;
+		if (this.min_version != '' && !compareVersions('4.8.0', this.min_version)) {
+			this.new_repository_format = true;
+		}
+		if (typeof data.contributes == 'object') {
+			this.contributes = data.contributes;
+		}
 
-    Merge.function(this, data, "onload");
-    Merge.function(this, data, "onunload");
-    Merge.function(this, data, "oninstall");
-    Merge.function(this, data, "onuninstall");
-    return this;
-  }
-  get name() {
-    return this.title;
-  }
-  async install() {
-    return await this.download(true);
-  }
-  async load(first, cb) {
-    var scope = this;
-    Plugins.registered[this.id] = this;
-    return await new Promise((resolve, reject) => {
-      let path = Plugins.path + scope.id + ".js";
-      if (!isApp && this.new_repository_format) {
-        path = `${Plugins.path}${scope.id}/${scope.id}.js`;
-      }
-      $.getScript(path, () => {
-        if (cb) cb.bind(scope)();
-        scope.bindGlobalData(first);
-        if (first && scope.oninstall) {
-          scope.oninstall();
-        }
-        if (first)
-          Blockbench.showQuickMessage(
-            tl("message.installed_plugin", [this.title]),
-          );
-        resolve();
-      }).fail(() => {
-        if (isApp) {
-          console.log(
-            'Could not find file of plugin "' +
-              scope.id +
-              '". Uninstalling it instead.',
-          );
-          scope.uninstall();
-        }
-        if (first)
-          Blockbench.showQuickMessage(
-            tl("message.installed_plugin_fail", [this.title]),
-          );
-        reject();
-      });
-      this.remember();
-      scope.installed = true;
-    });
-  }
-  async installDependencies(first) {
-    let required_dependencies = [];
-    for (let id of this.dependencies) {
-      let saved_install = !first && Plugins.installed.find((p) => p.id == id);
-      if (saved_install) {
-        continue;
-      }
-      let plugin = Plugins.all.find((p) => p.id == id);
-      if (plugin) {
-        if (plugin.installed == false) required_dependencies.push(plugin);
-        continue;
-      }
-      required_dependencies.push(id);
-    }
-    if (required_dependencies.length) {
-      let failed_dependency = required_dependencies.find((p) => {
-        return !p.isInstallable || p.isInstallable() != true;
-      });
-      if (failed_dependency) {
-        let error_message = failed_dependency;
-        if (failed_dependency instanceof Plugin) {
-          error_message = `**${failed_dependency.title}**: ${failed_dependency.isInstallable()}`;
-        }
-        Blockbench.showMessageBox({
-          title: "message.plugin_dependencies.title",
-          message: `Updating **${this.title || this.id}**:\n\n${tl("message.plugin_dependencies.invalid")}\n\n${error_message}`,
-        });
-        return false;
-      }
+		Merge.function(this, data, 'onload')
+		Merge.function(this, data, 'onunload')
+		Merge.function(this, data, 'oninstall')
+		Merge.function(this, data, 'onuninstall')
+		return this;
+	}
+	get name() {
+		return this.title;
+	}
+	async install() {
+		if (this.tags.includes('Deprecated') || this.deprecation_note) {
+			let message = tl('message.plugin_deprecated.message');
+			if (this.deprecation_note) {
+				message += '\n\n*' + this.deprecation_note + '*';
+			}
+			let answer = await new Promise((resolve) => {
+				Blockbench.showMessageBox({
+					icon: 'warning',
+					title: this.title,
+					message,
+					cancelIndex: 0,
+					buttons: ['dialog.cancel', 'message.plugin_deprecated.install_anyway']
+				}, resolve)
+			})
+			if (answer == 0) return;
+		}
+		return await this.download(true);
+	}
+	async load(first, cb) {
+		var scope = this;
+		Plugins.registered[this.id] = this;
+		return await new Promise((resolve, reject) => {
+			let path = Plugins.path + scope.id + '.js';
+			if (!isApp && this.new_repository_format)  {
+				path = `${Plugins.path}${scope.id}/${scope.id}.js`;
+			}
+			$.getScript(path, (content, status, context) => {
+				if (!content || content.length <= 20) {
+					console.warn(`Issue loading plugin "${this.id}": Plugin file empty`);
+				}
+				if (cb) cb.bind(scope)()
+				scope.bindGlobalData(first)
+				if (first && scope.oninstall) {
+					scope.oninstall()
+				}
+				if (first) Blockbench.showQuickMessage(tl('message.installed_plugin', [this.title]));
+				resolve()
+			}).fail(() => {
+				if (isApp) {
+					console.log('Could not find file of plugin "'+scope.id+'". Uninstalling it instead.')
+					scope.uninstall()
+				}
+				if (first) Blockbench.showQuickMessage(tl('message.installed_plugin_fail', [this.title]));
+				reject()
+			})
+			this.remember()
+			scope.installed = true;
+		})
+	}
+	async installDependencies(first) {
+		let required_dependencies = [];
+		for (let id of this.dependencies) {
+			let saved_install = !first && Plugins.installed.find(p => p.id == id);
+			if (saved_install) {
+				continue;
+			}
+			let plugin = Plugins.all.find(p => p.id == id);
+			if (plugin) {
+				if (plugin.installed == false) required_dependencies.push(plugin);
+				continue;
+			}
+			required_dependencies.push(id);
+		}
+		if (required_dependencies.length) {
+			let failed_dependency = required_dependencies.find(p => {
+				return !p.isInstallable || p.isInstallable() != true
+			});
+			if (failed_dependency) {
+				let error_message = failed_dependency;
+				if (failed_dependency instanceof Plugin) {
+					error_message = `**${failed_dependency.title}**: ${failed_dependency.isInstallable()}`;
+				}
+				Blockbench.showMessageBox({
+					title: 'message.plugin_dependencies.title',
+					message: `Updating **${this.title||this.id}**:\n\n${tl('message.plugin_dependencies.invalid')}\n\n${error_message}`,
+				});
+				return false;
+			}
 
       let list = required_dependencies.map(
         (p) => `**${p.title}** ${tl("dialog.plugins.author", [p.author])}`,
@@ -404,24 +417,24 @@ class Plugin {
 
     if (!already_exists) Plugins.installed.push(entry);
 
-    StateMemory.save("installed_plugins");
-    return this;
-  }
-  uninstall() {
-    try {
-      this.unload();
-      if (this.onuninstall) {
-        this.onuninstall();
-      }
-    } catch (err) {
-      console.log("Error in unload or uninstall method: ", err);
-    }
-    delete Plugins.registered[this.id];
-    let in_installed = Plugins.installed.find((plugin) => plugin.id == this.id);
-    Plugins.installed.remove(in_installed);
-    StateMemory.save("installed_plugins");
-    this.installed = false;
-    this.disabled = false;
+		StateMemory.save('installed_plugins')
+		return this;
+	}
+	uninstall() {
+		try {
+			this.unload();
+			if (this.onuninstall) {
+				this.onuninstall();
+			}
+		} catch (err) {
+			console.error(`Error in unload or uninstall method of "${this.id}": `, err);
+		}
+		delete Plugins.registered[this.id];
+		let in_installed = Plugins.installed.find(plugin => plugin.id == this.id);
+		Plugins.installed.remove(in_installed);
+		StateMemory.save('installed_plugins')
+		this.installed = false;
+		this.disabled = false;
 
     if (isApp && this.source !== "store") {
       Plugins.all.remove(this);
@@ -450,12 +463,14 @@ class Plugin {
   reload() {
     if (!isApp && this.source == "file") return this;
 
-    this.cache_version++;
-    this.unload();
-    this.tags.empty();
-    this.dependencies.empty();
-    Plugins.all.remove(this);
-    this.details = null;
+		this.cache_version++;
+		this.unload()
+		this.tags.empty();
+		this.dependencies.empty();
+		Plugins.all.remove(this);
+		this.details = null;
+		let had_changelog = this.changelog_fetched;
+		this.changelog_fetched = false;
 
     if (this.source == "file") {
       this.loadFromFile({ path: this.path }, false);
@@ -463,150 +478,151 @@ class Plugin {
       this.loadFromURL(this.path, false);
     }
 
-    this.fetchAbout(true);
+		this.fetchAbout(true);
+		if (had_changelog && this.has_changelog) {
+			this.fetchChangelog(true);
+		}
 
-    return this;
-  }
-  toggleDisabled() {
-    if (!this.disabled) {
-      this.disabled = true;
-      this.unload();
-    } else {
-      if (this.onload) {
-        this.onload();
-      }
-      this.disabled = false;
-    }
-    this.remember();
-  }
-  showContextMenu(event) {
-    //if (!this.installed) return;
-    this.menu.open(event, this);
-  }
-  isReloadable() {
-    return (
-      this.installed &&
-      !this.disabled &&
-      ((this.source == "file" && isApp) || this.source == "url")
-    );
-  }
-  isInstallable() {
-    var scope = this;
-    var result =
-      scope.variant === "both" ||
-      (isApp === (scope.variant === "desktop") &&
-        isApp !== (scope.variant === "web"));
-    if (result && scope.min_version) {
-      result = Blockbench.isOlderThan(scope.min_version)
-        ? "outdated_client"
-        : true;
-    }
-    if (result && scope.max_version) {
-      result = Blockbench.isNewerThan(scope.max_version)
-        ? "outdated_plugin"
-        : true;
-    }
-    if (result === false) {
-      result = scope.variant === "web" ? "web_only" : "app_only";
-    }
-    return result === true ? true : tl("dialog.plugins." + result);
-  }
-  hasImageIcon() {
-    return this.icon.endsWith(".png") || this.icon.endsWith(".svg");
-  }
-  getIcon() {
-    if (this.hasImageIcon()) {
-      if (isApp) {
-        if (this.installed && this.source == "store") {
-          return Plugins.path + this.id + "." + this.icon;
-        }
-        if (this.source != "store")
-          return this.path.replace(
-            /\w+\.js$/,
-            this.icon + (this.cache_version ? "?" + this.cache_version : ""),
-          );
-      }
-      return `${Plugins.api_path}/${this.id}/${this.icon}`;
-    }
-    return this.icon;
-  }
-  async fetchAbout(force) {
-    if (
-      ((!this.about_fetched && !this.about) || force) &&
-      this.new_repository_format
-    ) {
-      if (isApp && this.installed) {
-        try {
-          let about_path;
-          if (this.source == "store") {
-            about_path = PathModule.join(Plugins.path, this.id + ".about.md");
-          } else {
-            about_path = this.path.replace(/\w+\.js$/, "about.md");
-          }
-          let content = fs.readFileSync(about_path, { encoding: "utf-8" });
-          this.about = content;
-          this.about_fetched = true;
-          return;
-        } catch (err) {
-          console.error("failed to get about for plugin " + this.id);
-        }
-      }
-      let url = `${Plugins.api_path}/${this.id}/about.md`;
-      let result = await fetch(url).catch(() => {
-        console.error("about.md missing for plugin " + this.id);
-      });
-      if (result.ok) {
-        this.about = await result.text();
-      }
-      this.about_fetched = true;
-    }
-  }
-  getPluginDetails() {
-    if (this.details) return this.details;
-    this.details = {
-      version: this.version,
-      last_modified: "N/A",
-      creation_date: "N/A",
-      last_modified_full: "",
-      creation_date_full: "",
-      min_version: this.min_version ? this.min_version + "+" : "-",
-      max_version: this.max_version || "",
-      website: this.website || "",
-      repository: this.repository || "",
-      bug_tracker: this.bug_tracker || "",
-      author: this.author,
-      variant: this.variant == "both" ? "All" : this.variant,
-      weekly_installations: separateThousands(
-        Plugins.download_stats[this.id] || 0,
-      ),
-    };
+		return this;
+	}
+	toggleDisabled() {
+		if (!this.disabled) {
+			this.disabled = true;
+			this.unload()
+		} else {
+			if (this.onload) {
+				this.onload()
+			}
+			this.disabled = false;
+		}
+		this.remember();
+	}
+	showContextMenu(event) {
+		//if (!this.installed) return;
+		this.menu.open(event, this);
+	}
+	isReloadable() {
+		return this.installed && !this.disabled && ((this.source == 'file' && isApp) || (this.source == 'url'));
+	}
+	isInstallable() {
+		var scope = this;
+		var result = 
+			scope.variant === 'both' ||
+			(
+				isApp === (scope.variant === 'desktop') && 
+				isApp !== (scope.variant === 'web')
+			);
+		if (result && scope.min_version) {
+			result = Blockbench.isOlderThan(scope.min_version) ? 'outdated_client' : true;
+		}
+		if (result && scope.max_version) {
+			result = Blockbench.isNewerThan(scope.max_version) ? 'outdated_plugin' : true
+		}
+		if (result === false) {
+			result = (scope.variant === 'web') ? 'web_only' : 'app_only'
+		}
+		return (result === true) ? true : tl('dialog.plugins.'+result);
+	}
+	hasImageIcon() {
+		return this.icon.endsWith('.png') || this.icon.endsWith('.svg');
+	}
+	getIcon() {
+		if (this.hasImageIcon()) {
+			if (isApp) {
+				if (this.installed && this.source == 'store') {
+					return Plugins.path + this.id + '.' + this.icon;
+				}
+				if (this.source != 'store')
+					return this.path.replace(/\w+\.js$/, this.icon + (this.cache_version ? '?'+this.cache_version : ''));
+				}
+			return `${Plugins.api_path}/${this.id}/${this.icon}`;
+		}
+		return this.icon;
+	}
+	async fetchAbout(force) {
+		if (((!this.about_fetched && !this.about) || force) && this.new_repository_format) {
+			if (isApp && this.installed) {
+				try {
+					let about_path;
+					if (this.source == 'store') {
+						about_path = PathModule.join(Plugins.path, this.id + '.about.md');
+					} else {
+						about_path = this.path.replace(/\w+\.js$/, 'about.md');
+					}
+					let content = fs.readFileSync(about_path, {encoding: 'utf-8'});
+					this.about = content;
+					this.about_fetched = true;
+					return;
+				} catch (err) {
+					console.error('failed to get about for plugin ' + this.id);
+				}
+			}
+			let url = `${Plugins.api_path}/${this.id}/about.md`;
+			let result = await fetch(url).catch(() => {
+				console.error('about.md missing for plugin ' + this.id);
+			});
+			if (result.ok) {
+				this.about = await result.text();
+			}
+			this.about_fetched = true;
+		}
+	}
+	async fetchChangelog(force) {
+		if ((!this.changelog_fetched && !this.changelog) || force) {
+			function reverseOrder(input) {
+				let output = {};
+				Object.keys(input).forEachReverse(key => {
+					output[key] = input[key];
+				})
+				return output;
+			}
+			if (isApp && this.installed && this.source != 'store') {
+				try {
+					let changelog_path = this.path.replace(/\w+\.js$/, 'changelog.json');
+					let content = fs.readFileSync(changelog_path, {encoding: 'utf-8'});
+					this.changelog = reverseOrder(JSON.parse(content));
+					this.changelog_fetched = true;
+					return;
+				} catch (err) {
+					console.error('failed to get changelog for plugin ' + this.id, err);
+				}
+			}
+			let url = `${Plugins.api_path}/${this.id}/changelog.json`;
+			let result = await fetch(url).catch(() => {
+				console.error('changelog.json missing for plugin ' + this.id);
+			});
+			if (result.ok) {
+				this.changelog = reverseOrder(await result.json());
+			}
+			this.changelog_fetched = true;
+		}
+	}
+	getPluginDetails() {
+		if (this.details) return this.details;
+		this.details = {
+			version: this.version,
+			last_modified: 'N/A',
+			creation_date: 'N/A',
+			last_modified_full: '',
+			creation_date_full: '',
+			min_version: this.min_version ? (this.min_version+'+') : '-',
+			max_version: this.max_version || '',
+			website: this.website || '',
+			repository: this.repository || '',
+			bug_tracker: this.bug_tracker || '',
+			author: this.author,
+			variant: this.variant == 'both' ? 'All' : this.variant,
+			weekly_installations: separateThousands(Plugins.download_stats[this.id] || 0),
+		};
 
-    let trackDate = (input_date, key) => {
-      let date = new Date(input_date);
-      var diff =
-        Math.round(Blockbench.openTime / (60_000 * 60 * 24)) -
-        Math.round(date / (60_000 * 60 * 24));
-      let label;
-      if (diff <= 0) {
-        label = tl("dates.today");
-      } else if (diff == 1) {
-        label = tl("dates.yesterday");
-      } else if (diff <= 7) {
-        label = tl("dates.this_week");
-      } else if (diff <= 60) {
-        label = tl("dates.weeks_ago", [Math.ceil(diff / 7)]);
-      } else {
-        label = date.toLocaleDateString();
-      }
-      this.details[key] = label;
-      this.details[key + "_full"] =
-        date.toLocaleDateString() + " " + date.toLocaleTimeString();
-    };
-    if (this.source == "store") {
-      if (!this.details.bug_tracker)
-        this.details.bug_tracker = `https://github.com/JannisX11/blockbench-plugins/issues/new?title=[${this.title}]`;
-      if (!this.details.repository)
-        this.details.repository = `https://github.com/JannisX11/blockbench-plugins/tree/master/plugins/${this.id + (this.new_repository_format ? "" : ".js")}`;
+		let trackDate = (input_date, key) => {
+			let date = getDateDisplay(input_date);
+			this.details[key] = date.short;
+			this.details[key + '_full'] = date.full;
+		}
+		if (this.source == 'store') {
+			if (!this.details.bug_tracker) this.details.bug_tracker = `https://github.com/JannisX11/blockbench-plugins/issues/new?title=[${this.title}]`;
+			if (!this.details.repository) this.details.repository = `https://github.com/JannisX11/blockbench-plugins/tree/master/plugins/${this.id + (this.new_repository_format ? '' : '.js')}`;
 
       let github_path =
         (this.new_repository_format ? this.id + "/" + this.id : this.id) +
@@ -812,145 +828,134 @@ async function loadInstalledPlugins() {
         plugin.installed = true;
         if (installed_match.disabled) plugin.disabled = true;
 
-        if (
-          isApp &&
-          ((installed_match.version &&
-            plugin.version &&
-            !compareVersions(plugin.version, installed_match.version)) ||
-            Blockbench.isOlderThan(plugin.min_version))
-        ) {
-          // Get from file
-          let promise = plugin.load(false);
-          install_promises.push(promise);
-        } else {
-          // Update
-          let promise = plugin.download();
-          if (plugin.await_loading) {
-            install_promises.push(promise);
-          }
-        }
-      }
-    }
-  } else if (Plugins.installed.length > 0 && isApp) {
-    //Offline
-    Plugins.installed.forEach(function (plugin_data) {
-      if (plugin_data.source == "store") {
-        let instance = new Plugin(plugin_data.id);
-        let promise = instance.load(false, function () {
-          Plugins.sort();
-        });
-        install_promises.push(promise);
-      }
-    });
-  }
-  if (Plugins.installed.length > 0) {
-    var load_counter = 0;
-    Plugins.installed.forEachReverse(function (plugin) {
-      if (plugin.source == "file") {
-        //Dev Plugins
-        if (isApp && fs.existsSync(plugin.path)) {
-          var instance = new Plugin(plugin.id, { disabled: plugin.disabled });
-          install_promises.push(
-            instance.loadFromFile({ path: plugin.path }, false),
-          );
-          load_counter++;
-          console.log(
-            `🧩📁 Loaded plugin "${plugin.id || plugin.path}" from file`,
-          );
-        } else {
-          Plugins.installed.remove(plugin);
-        }
-      } else if (plugin.source == "url") {
-        if (plugin.path) {
-          var instance = new Plugin(plugin.id, { disabled: plugin.disabled });
-          install_promises.push(instance.loadFromURL(plugin.path, false));
-          load_counter++;
-          console.log(
-            `🧩🌐 Loaded plugin "${plugin.id || plugin.path}" from URL`,
-          );
-        } else {
-          Plugins.installed.remove(plugin);
-        }
-      } else {
-        if (Plugins.all.find((p) => p.id == plugin.id)) {
-          load_counter++;
-          console.log(`🧩🛒 Loaded plugin "${plugin.id}" from store`);
-        } else {
-          Plugins.installed.remove(plugin);
-        }
-      }
-    });
-    console.log(`Loaded ${load_counter} plugin${pluralS(load_counter)}`);
-  }
-  StateMemory.save("installed_plugins");
+				if (isApp && (
+					(installed_match.version && plugin.version && !compareVersions(plugin.version, installed_match.version)) ||
+					Blockbench.isOlderThan(plugin.min_version)
+				)) {
+					// Get from file
+					let promise = plugin.load(false);
+					install_promises.push(promise);
+				} else {
+					// Update
+					let promise = plugin.download();
+					if (plugin.await_loading) {
+						install_promises.push(promise);
+					}
+				}
+			}
+		}
+	} else if (Plugins.installed.length > 0 && isApp) {
+		//Offline
+		Plugins.installed.forEach(function(plugin_data) {
 
-  install_promises.forEach((promise) => {
-    promise.catch(console.error);
-  });
-  return await Promise.allSettled(install_promises);
+			if (plugin_data.source == 'store') {
+				let instance = new Plugin(plugin_data.id); 
+				let promise = instance.load(false, function() {
+					Plugins.sort();
+				})
+				install_promises.push(promise);
+			}
+		})
+	}
+	if (Plugins.installed.length > 0) {
+		var load_counter = 0;
+		Plugins.installed.forEachReverse(function(plugin) {
+
+			if (plugin.source == 'file') {
+				//Dev Plugins
+				if (isApp && fs.existsSync(plugin.path)) {
+					var instance = new Plugin(plugin.id, {disabled: plugin.disabled});
+					install_promises.push(instance.loadFromFile({path: plugin.path}, false));
+					load_counter++;
+					console.log(`🧩📁 Loaded plugin "${plugin.id || plugin.path}" from file`);
+				} else {
+					Plugins.installed.remove(plugin);
+				}
+
+			} else if (plugin.source == 'url') {
+				if (plugin.path) {
+					var instance = new Plugin(plugin.id, {disabled: plugin.disabled});
+					install_promises.push(instance.loadFromURL(plugin.path, false));
+					load_counter++;
+					console.log(`🧩🌐 Loaded plugin "${plugin.id || plugin.path}" from URL`);
+				} else {
+					Plugins.installed.remove(plugin);
+				}
+
+			} else {
+				if (Plugins.all.find(p => p.id == plugin.id)) {
+					load_counter++;
+					console.log(`🧩🛒 Loaded plugin "${plugin.id}" from store`);
+				} else if (Plugins.json instanceof Object && navigator.onLine) {
+					Plugins.installed.remove(plugin);
+				}
+			}
+		})
+		console.log(`Loaded ${load_counter} plugin${pluralS(load_counter)}`)
+	}
+	StateMemory.save('installed_plugins')
+	
+
+	install_promises.forEach(promise => {
+		promise.catch(console.error);
+	})
+	return await Promise.allSettled(install_promises);
 }
 
-BARS.defineActions(function () {
-  Plugins.dialog = new Dialog({
-    id: "plugins",
-    title: "dialog.plugins.title",
-    buttons: [],
-    width: 1200,
-    component: {
-      data: {
-        tab: "installed",
-        page_tab: "about",
-        search_term: "",
-        items: Plugins.all,
-        selected_plugin: null,
-        page: 0,
-        per_page: 25,
-        settings: settings,
-        isMobile: Blockbench.isMobile,
-      },
-      computed: {
-        plugin_search() {
-          var name = this.search_term.toUpperCase();
-          return this.items.filter((item) => {
-            if ((this.tab == "installed") == item.installed) {
-              if (name.length > 0) {
-                return (
-                  item.id.toUpperCase().includes(name) ||
-                  item.title.toUpperCase().includes(name) ||
-                  item.description.toUpperCase().includes(name) ||
-                  item.author.toUpperCase().includes(name) ||
-                  item.tags.find((tag) => tag.toUpperCase().includes(name))
-                );
-              }
-              return true;
-            }
-            return false;
-          });
-        },
-        suggested_rows() {
-          let tags = ["Animation"];
-          this.items.forEach((plugin) => {
-            if (!plugin.installed) return;
-            tags.safePush(...plugin.tags);
-          });
-          let rows = tags
-            .map((tag) => {
-              let plugins = this.items
-                .filter(
-                  (plugin) =>
-                    !plugin.installed &&
-                    plugin.tags.includes(tag) &&
-                    !plugin.tags.includes("Deprecated"),
-                )
-                .slice(0, 12);
-              return {
-                title: tag,
-                plugins,
-              };
-            })
-            .filter((row) => row.plugins.length > 2);
-          //rows.sort((a, b) => a.plugins.length - b.plugins.length);
-          rows.sort(() => Math.random() - 0.5);
+BARS.defineActions(function() {
+
+	Plugins.dialog = new Dialog({
+		id: 'plugins',
+		title: 'dialog.plugins.title',
+		buttons: [],
+		width: 1200,
+		resizable: 'xy',
+		component: {
+			data: {
+				tab: 'installed',
+				page_tab: 'about',
+				search_term: '',
+				items: Plugins.all,
+				selected_plugin: null,
+				page: 0,
+				per_page: 25,
+				settings: settings,
+				isMobile: Blockbench.isMobile,
+			},
+			computed: {
+				plugin_search() {
+					var name = this.search_term.toUpperCase()
+					return this.items.filter(item => {
+						if ((this.tab == 'installed') == item.installed) {
+							if (name.length > 0) {
+								return (
+									item.id.toUpperCase().includes(name) ||
+									item.title.toUpperCase().includes(name) ||
+									item.description.toUpperCase().includes(name) ||
+									item.author.toUpperCase().includes(name) ||
+									item.tags.find(tag => tag.toUpperCase().includes(name))
+								)
+							}
+							return true;
+						}
+						return false;
+					})
+				},
+				suggested_rows() {
+					let tags = ["Animation"];
+					this.items.forEach(plugin => {
+						if (!plugin.installed) return;
+						tags.safePush(...plugin.tags)
+					})
+					let rows = tags.map(tag => {
+						let plugins = this.items.filter(plugin => !plugin.installed && plugin.tags.includes(tag) && !plugin.tags.includes('Deprecated')).slice(0, 12);
+						return {
+							title: tag,
+							plugins,
+						}
+					}).filter(row => row.plugins.length > 2);
+					//rows.sort((a, b) => a.plugins.length - b.plugins.length);
+					rows.sort(() => Math.random() - 0.5);
 
           let cutoff = Date.now() - 3_600_000 * 24 * 28;
           let new_plugins = this.items.filter(
@@ -968,106 +973,146 @@ BARS.defineActions(function () {
             rows.splice(0, 0, new_row);
           }
 
-          return rows.slice(0, 3);
-        },
-        viewed_plugins() {
-          return this.plugin_search.slice(
-            this.page * this.per_page,
-            (this.page + 1) * this.per_page,
-          );
-        },
-        pages() {
-          let pages = [];
-          let length = this.plugin_search.length;
-          for (let i = 0; i * this.per_page < length; i++) {
-            pages.push(i);
-          }
-          return pages;
-        },
-        selected_plugin_settings() {
-          if (!this.selected_plugin) return {};
-          let plugin_settings = {};
-          for (let id in this.settings) {
-            if (settings[id].plugin == this.selected_plugin.id) {
-              plugin_settings[id] = settings[id];
-            }
-          }
-          return plugin_settings;
-        },
-      },
-      methods: {
-        setTab(tab) {
-          this.tab = tab;
-          this.setPage(0);
-        },
-        setPage(number) {
-          this.page = number;
-          this.$refs.plugin_list.scrollTop = 0;
-        },
-        selectPlugin(plugin) {
-          if (!plugin) {
-            this.selected_plugin = Plugin.selected = null;
-            return;
-          }
-          plugin.fetchAbout();
-          this.selected_plugin = Plugin.selected = plugin;
-          if (!this.selected_plugin.installed && this.page_tab == "settings") {
-            this.page_tab == "about";
-          }
-        },
-        showDependency(dependency) {
-          let plugin = Plugins.all.find((p) => p.id == dependency);
-          if (plugin) {
-            this.selectPlugin(plugin);
-          }
-        },
-        getDependencyName(dependency) {
-          let plugin = Plugins.all.find((p) => p.id == dependency);
-          return plugin
-            ? plugin.title + (plugin.installed ? " ✓" : "")
-            : dependency + " ⚠";
-        },
-        isDependencyInstalled(dependency) {
-          let plugin = Plugins.all.find((p) => p.id == dependency);
-          return plugin && plugin.installed;
-        },
-        getTagClass(tag) {
-          if (tag.match(/^(local|remote)$/i)) {
-            return "plugin_tag_source";
-          } else if (tag.match(/^minecraft/i)) {
-            return "plugin_tag_mc";
-          } else if (tag.match(/^deprecated/i)) {
-            return "plugin_tag_deprecated";
-          }
-        },
-        formatAbout(about) {
-          return pureMarked(about);
-        },
-        reduceLink(url) {
-          return url.replace("https://", "").substring(0, 50) + "...";
-        },
+					return rows.slice(0, 3);
+				},
+				viewed_plugins() {
+					return this.plugin_search.slice(this.page * this.per_page, (this.page+1) * this.per_page);
+				},
+				pages() {
+					let pages = [];
+					let length = this.plugin_search.length;
+					for (let i = 0; i * this.per_page < length; i++) {
+						pages.push(i);
+					}
+					return pages;
+				},
+				selected_plugin_settings() {
+					if (!this.selected_plugin) return {};
+					let plugin_settings = {};
+					for (let id in this.settings) {
+						if (settings[id].plugin == this.selected_plugin.id) {
+							plugin_settings[id] = settings[id];
+						}
+					}
+					return plugin_settings;
+				}
+			},
+			methods: {
+				setTab(tab) {
+					this.tab = tab;
+					this.setPage(0);
+				},
+				setPage(number) {
+					this.page = number;
+					this.$refs.plugin_list.scrollTop = 0;
+				},
+				selectPlugin(plugin) {
+					if (!plugin) {
+						this.selected_plugin = Plugin.selected = null;
+						return;
+					}
+					plugin.fetchAbout();
+					this.selected_plugin = Plugin.selected = plugin;
+					if (!this.selected_plugin.installed && this.page_tab == 'settings') {
+						this.page_tab == 'about';
+					}
+					if (this.page_tab == 'changelog') {
+						if (plugin.has_changelog) {
+							plugin.fetchChangelog();
+						} else {
+							this.page_tab == 'about';
+						}
+					}
+				},
+				setPageTab(tab) {
+					this.page_tab = tab;
+					if (this.page_tab == 'changelog' && this.selected_plugin.has_changelog) {
+						this.selected_plugin.fetchChangelog();
+					}
+				},
+				showDependency(dependency) {
+					let plugin = Plugins.all.find(p => p.id == dependency);
+					if (plugin) {
+						this.selectPlugin(plugin);
+					}
+				},
+				getDependencyName(dependency) {
+					let plugin = Plugins.all.find(p => p.id == dependency);
+					return plugin ? (plugin.title + (plugin.installed ? ' ✓' : '')) : (dependency + ' ⚠');
+				},
+				isDependencyInstalled(dependency) {
+					let plugin = Plugins.all.find(p => p.id == dependency);
+					return plugin && plugin.installed;
+				},
+				getTagClass(tag) {
+					if (tag.match(/^(local|remote)$/i)) {
+						return 'plugin_tag_source'
+					} else if (tag.match(/^minecraft/i)) {
+						return 'plugin_tag_mc'
+					} else if (tag.match(/^deprecated/i)) {
+						return 'plugin_tag_deprecated'
+					}
+				},
+				formatAbout(about) {
+					return pureMarked(about);
+				},
+				reduceLink(url) {
+					url = url.replace('https://', '').replace(/\/$/, '');
+					if (url.length > 50) {
+						return url.substring(0, 50)+'...';
+					} else {
+						return url;
+					}
+				},
+				printDate(input_date) {
+					return getDateDisplay(input_date).short;
+				},
+				printDateFull(input_date) {
+					return getDateDisplay(input_date).full;
+				},
+				formatChangelogLine(line) {
+					let content = [];
+					let last_i = 0;
+					for (let match of line.matchAll(/\[.+?\]\(.+?\)/g)) {
+						let split = match[0].search(/\]\(/);
+						let label = match[0].substring(1, split);
+						let href = match[0].substring(split+2, match[0].length-1);
+						let a = Interface.createElement('a', {href, title: href}, label);
+						content.push(line.substring(last_i, match.index));
+						content.push(a);
+						last_i = match.index + match[0].length;
+					}
+					content.push(line.substring(last_i));
+					let node = Interface.createElement('p', {}, content.filter(a => a));
+					return node.innerHTML;
+				},
 
-        // Settings
-        saveSettings() {
-          Settings.saveLocalStorages();
-        },
-        settingContextMenu(setting, event) {
-          new Menu([
-            {
-              name: "dialog.settings.reset_to_default",
-              icon: "replay",
-              click: () => {
-                setting.ui_value = setting.default_value;
-                this.saveSettings();
-              },
-            },
-          ]).open(event);
-        },
-        getProfileValuesForSetting(key) {
-          return SettingsProfile.all.filter((profile) => {
-            return profile.settings[key] !== undefined;
-          });
-        },
+				// Settings
+				changePluginSetting(setting) {
+					setTimeout(() => {
+						if (typeof setting.onChange == 'function') {
+							setting.onChange(setting.value);
+						}
+						Settings.saveLocalStorages();
+					}, 20);
+				},
+				settingContextMenu(setting, event) {
+					new Menu([
+						{
+							name: 'dialog.settings.reset_to_default',
+							icon: 'replay',
+							click: () => {
+								setting.ui_value = setting.default_value;
+								Settings.saveLocalStorages();
+							}
+						}
+					]).open(event);
+				},
+				getProfileValuesForSetting(key) {
+					return SettingsProfile.all.filter(profile => {
+						return profile.settings[key] !== undefined;
+					});
+				},
 
         // Features
         getPluginFeatures(plugin) {
@@ -1359,10 +1404,11 @@ BARS.defineActions(function () {
 						</div>
 
 						<ul id="plugin_browser_page_tab_bar">
-							<li :class="{selected: page_tab == 'about'}" @click="page_tab = 'about'">About</li>
-							<li :class="{selected: page_tab == 'details'}" @click="page_tab = 'details'">Details</li>
-							<li :class="{selected: page_tab == 'settings'}" @click="page_tab = 'settings'" v-if="selected_plugin.installed">Settings</li>
-							<li :class="{selected: page_tab == 'features'}" @click="page_tab = 'features'" v-if="selected_plugin.installed">Features</li>
+							<li :class="{selected: page_tab == 'about'}" @click="setPageTab('about')">About</li>
+							<li :class="{selected: page_tab == 'details'}" @click="setPageTab('details')">Details</li>
+							<li :class="{selected: page_tab == 'changelog'}" @click="setPageTab('changelog')" v-if="selected_plugin.has_changelog">Changelog</li>
+							<li :class="{selected: page_tab == 'settings'}" @click="setPageTab('settings')" v-if="selected_plugin.installed">Settings</li>
+							<li :class="{selected: page_tab == 'features'}" @click="setPageTab('features')" v-if="selected_plugin.installed">Features</li>
 						</ul>
 
 						<dynamic-icon v-if="page_tab == 'about' && !selected_plugin.about && !selected_plugin.hasImageIcon()" :icon="selected_plugin.icon" id="plugin_page_background_decoration" />
@@ -1422,6 +1468,25 @@ BARS.defineActions(function () {
 								</tr>
 							</tbody>
 						</table>
+
+						<ul v-if="page_tab == 'changelog' && typeof selected_plugin.changelog == 'object'" id="plugin_browser_changelog">
+							<li v-for="(version, key) in selected_plugin.changelog">
+								<h3>{{ version.title || key }}</h3>
+								<label class="plugin_changelog_author" v-if="version.author">{{ tl('dialog.plugins.author', [version.author]) }}</label>
+								<label class="plugin_changelog_date" v-if="version.date" :title="printDateFull(version.date)">
+									<i class="material-icons icon">calendar_today</i>
+									{{ printDate(version.date) }}
+								</label>
+								<ul>
+									<li v-for="category in version.categories">
+										<h4>{{ category.title || key }}</h4>
+										<ul class="plugin_changelog_features">
+											<li v-for="change in category.list" v-html="formatChangelogLine(change)"></li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+						</ul>
 						
 						<div v-if="page_tab == 'settings'">
 							<ul class="settings_list">
@@ -1430,13 +1495,13 @@ BARS.defineActions(function () {
 									@contextmenu="settingContextMenu(setting, $event)"
 								>
 									<template v-if="setting.type === 'number'">
-										<div class="setting_element"><numeric-input v-model.number="setting.ui_value" :min="setting.min" :max="setting.max" :step="setting.step" v-on:input="saveSettings()" /></div>
+										<div class="setting_element"><numeric-input v-model.number="setting.ui_value" :min="setting.min" :max="setting.max" :step="setting.step" @input="changePluginSetting(setting)" /></div>
 									</template>
 									<template v-else-if="setting.type === 'click'">
 										<div class="setting_element setting_icon" v-html="getIconNode(setting.icon).outerHTML"></div>
 									</template>
 									<template v-else-if="setting.type == 'toggle'"><!--TOGGLE-->
-										<div class="setting_element"><input type="checkbox" v-model="setting.ui_value" v-bind:id="'setting_'+key" v-on:click="saveSettings()"></div>
+										<div class="setting_element"><input type="checkbox" v-model="setting.ui_value" v-bind:id="'setting_'+key" @click="changePluginSetting(setting)"></div>
 									</template>
 
 									<div class="setting_label">
@@ -1452,11 +1517,11 @@ BARS.defineActions(function () {
 									</div>
 
 									<template v-if="setting.type === 'text'">
-										<input type="text" class="dark_bordered" style="width: 96%" v-model="setting.ui_value" v-on:input="saveSettings()">
+										<input type="text" class="dark_bordered" style="width: 96%" v-model="setting.ui_value" @input="changePluginSetting(setting)">
 									</template>
 
 									<template v-if="setting.type === 'password'">
-										<input :type="setting.hidden ? 'password' : 'text'" class="dark_bordered" style="width: calc(96% - 28px);" v-model="setting.ui_value" v-on:input="saveSettings()">
+										<input :type="setting.hidden ? 'password' : 'text'" class="dark_bordered" style="width: calc(96% - 28px);" v-model="setting.ui_value" @input="changePluginSetting(setting)">
 										<div class="password_toggle" @click="setting.hidden = !setting.hidden;">
 											<i class="fas fa-eye-slash" v-if="setting.hidden"></i>
 											<i class="fas fa-eye" v-else></i>
@@ -1465,7 +1530,7 @@ BARS.defineActions(function () {
 
 									<template v-else-if="setting.type === 'select'">
 										<div class="bar_select">
-											<select-input v-model="setting.ui_value" :options="setting.options" />
+											<select-input v-model="setting.ui_value" :options="setting.options" @change="changePluginSetting"setting />
 										</div>
 									</template>
 								</li>

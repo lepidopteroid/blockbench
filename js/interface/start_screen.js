@@ -1,10 +1,36 @@
 const StartScreen = {
-  loaders: {},
-  open() {
-    Interface.tab_bar.openNewTab();
-  },
+	loaders: {},
+	open() {
+		Interface.tab_bar.openNewTab();
+		MenuBar.mode_switcher_button.classList.add('hidden');
+	}
 };
 
+/**
+ * 
+ * @param {string} id Identifier
+ * @param {object} data 
+ * @param {object} data.graphic
+ * @param {'icon'|string} data.graphic.type
+ * @param {string} data.graphic.icon
+ * @param {string} data.graphic.source
+ * @param {number} data.graphic.width
+ * @param {number} data.graphic.height
+ * @param {number} data.graphic.aspect_ratio Section aspect ratio
+ * @param {string} data.graphic.description Markdown string
+ * @param {string} data.graphic.text_color
+ * @param {Array.<{text: String, type: String, list: Array.String, click: Function}>} data.text
+ * @param {'vertical'|'horizontal'} data.layout
+ * @param {Array} data.features
+ * @param {boolean} data.closable
+ * @param {Function} data.click
+ * @param {string} data.color
+ * @param {string} data.text_color
+ * @param {boolean} data.last
+ * @param {string} data.insert_after
+ * @param {string} data.insert_before
+ * @returns 
+ */
 function addStartScreenSection(id, data) {
   if (typeof id == "object") {
     data = id;
@@ -152,8 +178,8 @@ function addStartScreenSection(id, data) {
   };
 }
 
-onVueSetup(function () {
-  StateMemory.init("start_screen_list_type", "string");
+onVueSetup(async function() {
+	StateMemory.init('start_screen_list_type', 'string')
 
   let slideshow_timer = 0;
 
@@ -175,159 +201,153 @@ onVueSetup(function () {
       thumbnails: {},
       getIconNode: Blockbench.getIconNode,
 
-      slideshow: [
-        {
-          source: "./assets/splash_art/1.png",
-          description:
-            "Splash Art 1st Place by [morange](https://twitter.com/OrangewithMC) & [PeacedoveWum](https://twitter.com/PeacedoveWum)",
-        },
-        {
-          source: "./assets/splash_art/2.png",
-          description:
-            "Splash Art 2nd Place by [Wackyblocks](https://twitter.com/Wackyblocks)",
-        },
-        {
-          source: "./assets/splash_art/3.png",
-          description:
-            "Splash Art 3rd Place by [David Grindholmen](https://david_grindholmen.artstation.com/) & [Quinten Bench](https://quintenbench.wixsite.com/quinten-bench)",
-        },
-      ],
-      show_splash_screen:
-        Blockbench.hasFlag("after_update") ||
-        settings.always_show_splash_art.value,
-      slideshow_selected: 0,
-      slideshow_last: null,
-      slideshow_autoplay: true,
-    },
-    methods: {
-      getDate(p) {
-        if (p.day) {
-          var diff = (365e10 + Blockbench.openTime.dayOfYear() - p.day) % 365;
-          if (diff <= 0) {
-            return tl("dates.today");
-          } else if (diff == 1) {
-            return tl("dates.yesterday");
-          } else if (diff <= 7) {
-            return tl("dates.this_week");
-          } else {
-            return tl("dates.weeks_ago", [Math.ceil(diff / 7)]);
-          }
-        } else {
-          return "-";
-        }
-      },
-      openProject: function (p, event) {
-        Blockbench.read([p.path], {}, (files) => {
-          loadModelFile(files[0]);
-        });
-      },
-      updateThumbnails(model_paths) {
-        this.recent.forEach((project) => {
-          if (model_paths && !model_paths.includes(project.path)) return;
-          let hash = project.path.hashCode().toString().replace(/^-/, "0");
-          let path = PathModule.join(
-            app.getPath("userData"),
-            "thumbnails",
-            `${hash}.png`,
-          );
-          if (!fs.existsSync(path)) {
-            delete this.thumbnails[project.path];
-          } else {
-            this.thumbnails[project.path] =
-              path + "?" + Math.round(Math.random() * 255);
-          }
-        });
-        this.$forceUpdate();
-      },
-      setListType(type) {
-        this.list_type = type;
-        StateMemory.start_screen_list_type = type;
-        StateMemory.save("start_screen_list_type");
-      },
-      recentProjectContextMenu(recent_project, event) {
-        let menu = new Menu("recent_project", [
-          {
-            id: "favorite",
-            name: "mode.start.recent.favorite",
-            icon: recent_project.favorite ? "fas.fa-star" : "far.fa-star",
-            click: () => {
-              this.toggleProjectFavorite(recent_project);
-            },
-          },
-          {
-            id: "open_folder",
-            name: "menu.texture.folder",
-            icon: "folder",
-            click() {
-              shell.showItemInFolder(recent_project.path);
-            },
-          },
-          {
-            id: "remove",
-            name: "generic.remove",
-            icon: "clear",
-            click: () => {
-              recent_projects.remove(recent_project);
-              updateRecentProjects();
-            },
-          },
-        ]);
-        menu.show(event);
-      },
-      toggleProjectFavorite(recent_project) {
-        recent_project.favorite = !recent_project.favorite;
-        if (recent_project.favorite) {
-          recent_projects.remove(recent_project);
-          recent_projects.splice(0, 0, recent_project);
-        }
-        updateRecentProjects();
-      },
-      getFormatCategories() {
-        let categories = {};
-        function add(key, format) {
-          if (!categories[format.category]) {
-            categories[format.category] = {
-              name: tl("format_category." + format.category),
-              entries: [],
-            };
-          }
-          categories[format.category].entries.push(format);
-        }
-        for (let key in this.formats) {
-          if (this.formats[key].show_on_start_screen != false) {
-            add(key, this.formats[key]);
-          }
-        }
-        for (let key in this.loaders) {
-          if (this.loaders[key].show_on_start_screen != false) {
-            add(key, this.loaders[key]);
-          }
-        }
-        return categories;
-      },
-      loadFormat(format_entry) {
-        this.selected_format_id = format_entry.id;
-        if (format_entry.onFormatPage) format_entry.onFormatPage();
-        Vue.nextTick(() => {
-          let button = document.querySelector(
-            ".start_screen_format_page button",
-          );
-          if (!button) return;
-          let offset = $(button).offset().top;
-          if (offset + 38 > window.innerHeight) {
-            let change = offset + 64 - window.innerHeight;
-            StartScreen.vue.$el.scrollTo({
-              top: StartScreen.vue.$el.scrollTop + change,
-              behavior: "smooth",
-            });
-          }
-        });
-      },
-      confirmSetupScreen(format_entry) {
-        this.selected_format_id = "";
-        if (format_entry.onStart) format_entry.onStart();
-        if (typeof format_entry.new == "function") format_entry.new();
-      },
+			slideshow: [
+				{
+					source: "./assets/splash_art/1.webp",
+					description: "Splash Art 1st Place by [skeleton_tiffay](https://twitter.com/Tiffany85635656)",
+				},
+				{
+					source: "./assets/splash_art/2.webp",
+					description: "Splash Art 2nd Place by [AnzSama](https://twitter.com/AnzSamaEr) & [PICASSO](https://twitter.com/Picasso114514)",
+				},
+				{
+					source: "./assets/splash_art/3.webp",
+					description: "Splash Art 3rd Place by [YunGui](https://twitter.com/AmosJea28222061) & [makstutis233](https://x.com/Maks2335770189)",
+				},
+				{
+					source: "./assets/splash_art/4.webp",
+					description: "Splash Art 4th Place by [soul shadow](https://twitter.com/Ghost773748999) & NekoGabriel",
+				},
+				{
+					source: "./assets/splash_art/5.webp",
+					description: "Splash Art 5th Place by [🌷Aza🌷](https://twitter.com/azagwen_art) & Shroomy",
+				}
+			],
+			show_splash_screen: (Blockbench.hasFlag('after_update') || settings.always_show_splash_art.value),
+			slideshow_selected: 0,
+			slideshow_last: null,
+			slideshow_autoplay: true
+		},
+		methods: {
+			getDate(p) {
+				if (p.day) {
+					var diff = (365e10 + Blockbench.openTime.dayOfYear() - p.day) % 365;
+					if (diff <= 0) {
+						return tl('dates.today');
+					} else if (diff == 1) {
+						return tl('dates.yesterday');
+					} else if (diff <= 7) {
+						return tl('dates.this_week');
+					} else {
+						return tl('dates.weeks_ago', [Math.ceil(diff/7)]);
+					}
+				} else {
+					return '-'
+				}
+			},
+			openProject: function(p, event) {
+				Blockbench.read([p.path], {}, files => {
+					loadModelFile(files[0]);
+				})
+			},
+			updateThumbnails(model_paths) {
+				this.recent.forEach(project => {
+					if (model_paths && !model_paths.includes(project.path)) return;
+					let hash = project.path.hashCode().toString().replace(/^-/, '0');
+					let path = PathModule.join(app.getPath('userData'), 'thumbnails', `${hash}.png`);
+					if (!fs.existsSync(path)) {
+						delete this.thumbnails[project.path];
+					} else {
+						this.thumbnails[project.path] = path + '?' + Math.round(Math.random()*255);
+					}
+				})
+				this.$forceUpdate();
+			},
+			setListType(type) {
+				this.list_type = type;
+				StateMemory.start_screen_list_type = type;
+				StateMemory.save('start_screen_list_type')
+			},
+			recentProjectContextMenu(recent_project, event) {
+				let menu = new Menu('recent_project', [
+					{
+						id: 'favorite',
+						name: 'mode.start.recent.favorite',
+						icon: recent_project.favorite ? 'fas.fa-star' : 'far.fa-star',
+						click: () => {
+							this.toggleProjectFavorite(recent_project);
+						}
+					},
+					{
+						id: 'open_folder',
+						name: 'menu.texture.folder',
+						icon: 'folder',
+						click() {
+							shell.showItemInFolder(recent_project.path)
+						}
+					},
+					{
+						id: 'remove',
+						name: 'generic.remove',
+						icon: 'clear',
+						click: () => {
+							recent_projects.remove(recent_project);
+							updateRecentProjects();
+						}
+					}
+				])
+				menu.show(event);
+			},
+			toggleProjectFavorite(recent_project) {
+				recent_project.favorite = !recent_project.favorite;
+				if (recent_project.favorite) {
+					recent_projects.remove(recent_project);
+					recent_projects.splice(0, 0, recent_project);
+				}
+				updateRecentProjects();
+			},
+			getFormatCategories() {
+				let categories = {};
+				function add(key, format) {
+					
+					if (!categories[format.category]) {
+						categories[format.category] = {
+							name: tl('format_category.' + format.category),
+							entries: []
+						}
+					}
+					categories[format.category].entries.push(format);
+				}
+				for (let key in this.formats) {
+					if (this.formats[key].show_on_start_screen != false) {
+						add(key, this.formats[key]);
+					}
+				}
+				for (let key in this.loaders) {
+					if (this.loaders[key].show_on_start_screen != false) {
+						add(key, this.loaders[key]);
+					}
+				}
+				return categories;
+			},
+			loadFormat(format_entry) {
+				this.selected_format_id = format_entry.id;
+				if (format_entry.onFormatPage) format_entry.onFormatPage();
+				Vue.nextTick(() => {
+					let button = document.querySelector('.start_screen_format_page button');
+					if (!button) return;
+					let offset = $(button).offset().top;
+					if (offset + 38 > window.innerHeight) {
+						let change = offset + 64 - window.innerHeight;
+						StartScreen.vue.$el.scrollTo({top: StartScreen.vue.$el.scrollTop + change, behavior: 'smooth'})
+					}
+				})
+			},
+			confirmSetupScreen(format_entry) {
+				this.selected_format_id = '';
+				if (format_entry.onStart) format_entry.onStart();
+				if (typeof format_entry.new == 'function') format_entry.new();
+			},
 
       getBackground(url) {
         return `url("${url}")`;
@@ -532,61 +552,38 @@ onVueSetup(function () {
 		`,
   });
 
-  Blockbench.on("construct_format delete_format", () => {
-    StartScreen.vue.$forceUpdate();
-  });
-  Blockbench.on('close_project', (event) => {
-    Modes.buttonsVue.$forceUpdate();
-  });
+	Blockbench.on('construct_format delete_format', () => {
+		StartScreen.vue.$forceUpdate();
+	})
 
-  if (settings.streamer_mode.value) {
-    updateStreamerModeNotification();
-  }
+	
+	if (settings.streamer_mode.value) {
+		updateStreamerModeNotification()
+	}
+	
+	//Backup Model
+	let has_backups = await AutoBackup.hasBackups();
+	if (has_backups && (!isApp || !currentwindow.webContents.second_instance)) {
 
-  //Backup Model
-  if (
-    localStorage.getItem("backup_model") &&
-    (!isApp || !currentwindow.webContents.second_instance) &&
-    localStorage.getItem("backup_model").length > 40
-  ) {
-    var backup_models = localStorage.getItem("backup_model");
-
-    let section = addStartScreenSection({
-      color: "var(--color-back)",
-      graphic: { type: "icon", icon: "fa-archive" },
-      insert_before: "start_files",
-      text: [
-        { type: "h2", text: tl("message.recover_backup.title") },
-        { text: tl("message.recover_backup.message") },
-        {
-          type: "button",
-          text: tl("message.recover_backup.recover"),
-          click: (e) => {
-            let parsed_backup_models = JSON.parse(backup_models);
-            for (let uuid in parsed_backup_models) {
-              AutoBackupModels[uuid] = parsed_backup_models[uuid];
-
-              let model = parsed_backup_models[uuid];
-              setupProject(
-                Formats[model.meta.model_format] || Formats.free,
-                uuid,
-              );
-              Codecs.project.parse(model, "backup.bbmodel");
-            }
-            section.delete();
-          },
-        },
-        {
-          type: "button",
-          text: tl("dialog.discard"),
-          click: (e) => {
-            localStorage.removeItem("backup_model");
-            section.delete();
-          },
-        },
-      ],
-    });
-  }
+		let section = addStartScreenSection({
+			color: 'var(--color-back)',
+			graphic: {type: 'icon', icon: 'fa-archive'},
+			insert_before: 'start_files',
+			text: [
+				{type: 'h2', text: tl('message.recover_backup.title')},
+				{text: tl('message.recover_backup.message')},
+				{type: 'button', text: tl('message.recover_backup.recover'), click: (e) => {
+					AutoBackup.recoverAllBackups().then(() => {
+						section.delete();
+					});
+				}},
+				{type: 'button', text: tl('dialog.discard'), click: (e) => {
+					AutoBackup.removeAllBackups();
+					section.delete();
+				}}
+			]
+		})
+	}
 });
 
 class ModelLoader {
