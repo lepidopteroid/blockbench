@@ -120,6 +120,75 @@ function addStartScreenSection(id, data) {
   if (data.layout == "vertical") {
     obj.addClass("vertical");
   }
+	if (typeof id == 'object') {
+		data = id;
+		id = '';
+	}
+	var obj = $(Interface.createElement('section', {id}))
+	if (typeof data.graphic === 'object') {
+		var left = $('<div class="start_screen_left graphic"></div>')
+		obj.append(left)
+
+		if (data.graphic.type === 'icon') {
+			var icon = Blockbench.getIconNode(data.graphic.icon)
+			left.addClass('graphic_icon')
+			left.append(icon)
+		} else {
+			left.css('background-image', `url('${data.graphic.source}')`)
+		}
+		if (data.graphic.width) {
+			left.css('width', data.graphic.width+'px');
+		}
+		if (data.graphic.width && data.text) {
+			left.css('flex-shrink', '0');
+		}
+		if (data.graphic.width && data.graphic.height && Blockbench.isMobile) {
+			left.css('height', '0')
+				.css('padding-top', '0')
+				.css('padding-bottom', (data.graphic.height/data.graphic.width*100)+'%')
+		} else {
+			if (data.graphic.height) left.css('height', data.graphic.height+'px');
+			if (data.graphic.width && !data.graphic.height && !data.graphic.aspect_ratio) left.css('height', data.graphic.width+'px');
+			if (data.graphic.aspect_ratio) left.css('aspect-ratio', data.graphic.aspect_ratio);
+		}
+		if (data.graphic.description) {
+			let content = $(pureMarked(data.graphic.description));
+			content.addClass('start_screen_graphic_description')
+			content.css({
+				'color': data.graphic.text_color || '#ffffff',
+			});
+			left.append(content);
+		}
+	}
+	if (data.text instanceof Array) {
+		var right = $('<div class="start_screen_right"></div>')
+		obj.append(right)
+		data.text.forEach(line => {
+			var content = line.text ? pureMarked(tl(line.text)) : '';
+			switch (line.type) {
+				case 'h1': var tag = 'h1'; break;
+				case 'h2': var tag = 'h2'; break;
+				case 'h3': var tag = 'h3'; break;
+				case 'h4': var tag = 'h4'; break;
+				case 'list':
+					var tag = 'ul class="list_style"';
+					line.list.forEach(string => {
+						content += `<li>${pureMarked(tl(string))}</li>`;
+					})
+					break;
+				case 'button': var tag = 'button'; break;
+				default:   var tag = 'p'; break;
+			}
+			var l = $(`<${tag}>${content}</${tag.split(' ')[0]}>`);
+			if (typeof line.click == 'function') {
+				l.on('click', line.click);
+			}
+			right.append(l);
+		})
+	}
+	if (data.layout == 'vertical') {
+		obj.addClass('vertical');
+	}
 
   if (data.features instanceof Array) {
     let features_section = document.createElement("ul");
@@ -560,31 +629,8 @@ onVueSetup(async function() {
 	if (settings.streamer_mode.value) {
 		updateStreamerModeNotification()
 	}
-	
-	//Backup Model
-	let has_backups = await AutoBackup.hasBackups();
-	if (has_backups && (!isApp || !currentwindow.webContents.second_instance)) {
-
-		let section = addStartScreenSection({
-			color: 'var(--color-back)',
-			graphic: {type: 'icon', icon: 'fa-archive'},
-			insert_before: 'start_files',
-			text: [
-				{type: 'h2', text: tl('message.recover_backup.title')},
-				{text: tl('message.recover_backup.message')},
-				{type: 'button', text: tl('message.recover_backup.recover'), click: (e) => {
-					AutoBackup.recoverAllBackups().then(() => {
-						section.delete();
-					});
-				}},
-				{type: 'button', text: tl('dialog.discard'), click: (e) => {
-					AutoBackup.removeAllBackups();
-					section.delete();
-				}}
-			]
-		})
-	}
 });
+
 
 class ModelLoader {
   constructor(id, options) {
